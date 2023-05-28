@@ -3,6 +3,7 @@ package rs.raf.vezbe11.presentation.view.activities
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.Handler
 import android.os.PersistableBundle
 import android.window.SplashScreen
 import androidx.appcompat.app.AppCompatActivity
@@ -12,11 +13,13 @@ import rs.raf.vezbe11.databinding.ActivitySplashscreenBinding
 import timber.log.Timber
 
 
-class SplashScreenActivity : AppCompatActivity(),KoinComponent{
+class SplashScreenActivity : AppCompatActivity() {
     private lateinit var binding: ActivitySplashscreenBinding
-    private val sharedPreferences: SharedPreferences by inject()//bice dohvacen preko depen.inj.
-    //Morao sam da prebacim ovde,zato sto pocetni aktiviti aplikacija mora da ima prazan konstruktor
+    private val sharedPreferences: SharedPreferences by inject()
 
+    private val splashScreenDelay: Long = 3000 // Delay duration in milliseconds
+    private val handler = Handler() //koristi se za sleep(Thread.sleep nece raditi
+                                    //kako treba.Sleepujemo da bismo simulirali ucitavanje)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,25 +27,23 @@ class SplashScreenActivity : AppCompatActivity(),KoinComponent{
         setContentView(binding.root)
         loadSplashScreen()
     }
+
     private fun loadSplashScreen() {
-
-        val loggedIn: Boolean = sharedPreferences.getBoolean("login", false)
-        Thread.sleep(2000);//cisto da splashscreen traje malo
-        if (loggedIn) {
-            //pokrecemo mainActivity ako se korisnik uspesno ulogovao
-            Intent(this, MainActivity::class.java).also {
-                startActivity(it)
-                finish()
+        handler.postDelayed({
+            val loggedIn: Boolean = sharedPreferences.getBoolean("login", false)
+            if (loggedIn) {
+                // Start MainActivity if the user is successfully logged in
+                startActivity(Intent(this, MainActivity::class.java))
+            } else {
+                // Start LoginActivity if the user is not logged in
+                startActivity(Intent(this, LoginActivity::class.java))
             }
-        } else {
-            //pokrecemo loginActivity ako se korisnik nije ulogovao
-            Intent(this, LoginActivity::class.java).also {
-                startActivity(it)
-                finish()
-            }
-        }
-
+            finish()
+        }, splashScreenDelay)
     }
 
-
+    override fun onDestroy() {
+        super.onDestroy()
+        handler.removeCallbacksAndMessages(null)
+    }
 }
