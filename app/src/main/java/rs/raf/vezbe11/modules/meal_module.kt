@@ -1,7 +1,9 @@
 package rs.raf.vezbe11.modules
 
 import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
+import retrofit2.Retrofit
 import rs.raf.vezbe11.data.database.Database
 import rs.raf.vezbe11.data.datasources.remote.FoodService
 import rs.raf.vezbe11.data.repositories.FoodRepository
@@ -20,8 +22,9 @@ val mealModule=module{
         get<Database>().getFoodDao()
     }
     single<FoodService> {
-        create(retrofit = get())
+        get<Retrofit>(named("mealDbRetrofit")).create(FoodService::class.java)
     }
+
 
 
 }

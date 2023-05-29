@@ -8,7 +8,10 @@ import rs.raf.vezbe11.databinding.LayoutItemCategoryBinding
 import rs.raf.vezbe11.presentation.view.recycler.diff.CategoryDiffCallback
 import rs.raf.vezbe11.presentation.view.recycler.viewholder.CategoryViewHolder
 
-class CategoryAdapter : ListAdapter<CategoryEntity, CategoryViewHolder>(CategoryDiffCallback()){
+class CategoryAdapter(
+    categoryDiffItemCallback: CategoryDiffCallback,
+    private val onCategoryClicked: (CategoryEntity) -> Unit)
+    : ListAdapter<CategoryEntity, CategoryViewHolder>(CategoryDiffCallback()){
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CategoryViewHolder {
@@ -18,6 +21,8 @@ class CategoryAdapter : ListAdapter<CategoryEntity, CategoryViewHolder>(Category
     override fun onBindViewHolder(holder: CategoryViewHolder, position: Int) {
         holder.bind(getItem(position))
     }
+
+
 
 
 }

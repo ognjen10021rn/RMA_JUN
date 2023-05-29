@@ -1,6 +1,7 @@
 package rs.raf.vezbe11.modules
 
 import android.content.Context
+import androidx.room.Database
 import androidx.room.Room
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.adapters.Rfc3339DateJsonAdapter
@@ -8,6 +9,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.android.ext.koin.androidApplication
 import org.koin.android.ext.koin.androidContext
+import org.koin.core.qualifier.named
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
@@ -24,6 +26,20 @@ val coreModule= module {
             Context.MODE_PRIVATE
         )
     }
+    single { Room.databaseBuilder(androidContext(), rs.raf.vezbe11.data.database.Database::class.java, "FoodDb")
+        .fallbackToDestructiveMigration()
+        .build() }
+
+
+    //ne moze biti single,zato sto moramo da imamo 2 razlicita retrofita.Jer gadjamo
+    //2 apija
+    single(named("mealDbRetrofit")) { createMealDbRetrofit(moshi = get(), httpClient = get()) }
+
+    single(named("nutritionRetrofit")) { createNutritionRetrofit(moshi = get(), httpClient = get()) }
+
+    single { createMoshi() }
+
+    single { createOkHttpClient() }
 }
     fun createMoshi(): Moshi {
         return Moshi.Builder()

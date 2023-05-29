@@ -4,7 +4,9 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import io.reactivex.Completable
+import rs.raf.vezbe11.data.models.CategoryEntity
 import rs.raf.vezbe11.data.models.FoodEntity
 
 @Dao
@@ -27,6 +29,15 @@ abstract class FoodDao {
     @Query("SELECT * FROM foods WHERE name LIKE :name || '%'")
     abstract fun getByName(name: String): List<FoodEntity>
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun insertAllCategories(entities: List<CategoryEntity>): Completable
+
+
+    @Transaction
+    open fun deleteAndInsertAllCategories(entities: List<CategoryEntity>) {
+        deleteAll()
+        insertAllCategories(entities).blockingAwait() // po defaultu je async, ali mi zelimo da bude sync
+    }
 
 
 }

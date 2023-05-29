@@ -1,6 +1,6 @@
 package rs.raf.vezbe11.presentation.contract
 
-class NutritionContract {
+interface NutritionContract {
     interface ViewModel {
 
 
