@@ -34,11 +34,19 @@ val coreModule= module {
             .build()
     }
 
-    fun createRetrofit(moshi: Moshi,
-                       httpClient: OkHttpClient
-    ): Retrofit {
+    //2 retrofita,za 2 razlicite rute.
+    fun createMealDbRetrofit(moshi: Moshi, httpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://ghibliapi.vercel.app/") //TODO promeniti link apija
+            .baseUrl("https://www.themealdb.com/api.php/")
+            .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+            .addConverterFactory(MoshiConverterFactory.create(moshi).asLenient())
+            .client(httpClient)
+            .build()
+    }
+
+    fun createNutritionRetrofit(moshi: Moshi, httpClient: OkHttpClient): Retrofit {
+        return Retrofit.Builder()
+            .baseUrl("https://api-ninjas.com/api/nutrition/")
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(MoshiConverterFactory.create(moshi).asLenient())
             .client(httpClient)
