@@ -24,10 +24,7 @@ val coreModule= module {
             Context.MODE_PRIVATE
         )
     }
-
-
 }
-
     fun createMoshi(): Moshi {
         return Moshi.Builder()
             .add(Date::class.java, Rfc3339DateJsonAdapter())
