@@ -104,4 +104,5 @@ dependencies {
     // Do not update codegen version it will produce compile error when used with moshi retrofit converter!
     kapt "com.squareup.moshi:moshi-kotlin-codegen:$moshiVersion"
 
+    implementation 'com.github.bumptech.glide:glide:4.15.1'
 }

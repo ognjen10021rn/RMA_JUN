@@ -2,15 +2,17 @@ package rs.raf.vezbe11.data.datasources.remote
 
 import retrofit2.http.GET
 import io.reactivex.Observable
+import org.json.JSONObject
 import retrofit2.http.Query
 import rs.raf.vezbe11.data.models.responses.CategoriesResponse
+import rs.raf.vezbe11.data.models.responses.CategoryResponse
 import rs.raf.vezbe11.data.models.responses.FoodByCategoryResponse
 import rs.raf.vezbe11.data.models.responses.FoodResponse
 
 interface FoodService {
 
     @GET("categories.php")
-    fun getAll(): Observable<List<CategoriesResponse>>
+    fun getAll(): Observable<CategoryResponse>
 
     @GET("filter.php")
     fun getFoodsByCategory(@Query("c") category: String): Observable<List<FoodByCategoryResponse>>

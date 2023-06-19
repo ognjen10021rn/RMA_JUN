@@ -13,7 +13,7 @@ import rs.raf.vezbe11.presentation.viewmodel.FoodViewModel
 val mealModule=module{
 
     viewModel {
-        FoodViewModel(repository = get())
+        FoodViewModel(foodRepository = get())
     }
     single<FoodRepository> {
         FoodRepositoryImplementation(localDataSource = get(), remoteDataSource = get())
@@ -23,6 +23,7 @@ val mealModule=module{
     }
     single<FoodService> {
         get<Retrofit>(named("mealDbRetrofit")).create(FoodService::class.java)
+        //create(retrofit = get())
     }
 
 

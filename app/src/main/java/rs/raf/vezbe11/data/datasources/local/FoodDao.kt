@@ -6,6 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import io.reactivex.Completable
+import io.reactivex.Observable
 import rs.raf.vezbe11.data.models.CategoryEntity
 import rs.raf.vezbe11.data.models.FoodEntity
 
@@ -20,8 +21,8 @@ abstract class FoodDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun insertAll(entities: List<FoodEntity>): Completable
 
-    @Query("SELECT * FROM foods")
-    abstract fun getAll(): List<FoodEntity>
+    @Query("SELECT * FROM categories")
+    abstract fun getAll(): Observable<List<CategoryEntity>>
 
     @Query ("DELETE FROM foods")
     abstract fun deleteAll()
