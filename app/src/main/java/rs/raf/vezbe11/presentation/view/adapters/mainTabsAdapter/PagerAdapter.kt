@@ -4,6 +4,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import rs.raf.vezbe11.presentation.view.fragments.CategoryListFragment
+import rs.raf.vezbe11.presentation.view.fragments.FilterFragment
 
 class PagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
@@ -17,7 +18,7 @@ class PagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(frag
     override fun getItem(position: Int): Fragment {
         return when(position) {
             FRAGMENT_1 -> CategoryListFragment() //prikaz kategorije jela
-            FRAGMENT_2 -> CategoryListFragment()
+            FRAGMENT_2 -> FilterFragment()
             else -> CategoryListFragment()
         }
     }

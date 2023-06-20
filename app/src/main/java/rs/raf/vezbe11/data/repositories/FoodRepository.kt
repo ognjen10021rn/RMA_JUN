@@ -10,6 +10,7 @@ interface FoodRepository {
     fun fetchAllCategories(): Observable<Resource<Unit>>
     fun getAllCategories(): Observable<List<Category>>
     fun getCategoriesByName(name: String): Observable<List<Category>>
+    fun getFoodByCategory(name:String): Observable<Resource<Unit>>
 
 
 }

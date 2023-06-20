@@ -6,7 +6,7 @@ import rs.raf.vezbe11.data.models.Resource
 import io.reactivex.Observable
 import rs.raf.vezbe11.data.models.Category
 import rs.raf.vezbe11.data.models.CategoryEntity
-import rs.raf.vezbe11.data.models.responses.CategoriesResponse
+import rs.raf.vezbe11.data.models.FoodByParameterEntity
 import timber.log.Timber
 
 
@@ -51,6 +51,28 @@ class FoodRepositoryImplementation(
     override fun getCategoriesByName(name: String): Observable<List<Category>> {
         TODO("Not yet implemented")
     }
+    override fun getFoodByCategory(name: String): Observable<Resource<Unit>> {
+        return remoteDataSource
+            .getFoodsByCategory(name)
+            .doOnNext {
+
+                val mealList = it.meals
+                val entities = mealList.map {
+                    FoodByParameterEntity(it.idMeal,it.strMeal,it.strMealThumb)
+                }
+
+                localDataSource.deleteAndInsertFoodsByParameter(entities)
+            }
+            .map {
+                Resource.Success(Unit)
+            }
+
+
+
+
+
+    }
+
 
 
 }

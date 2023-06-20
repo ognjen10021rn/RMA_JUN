@@ -59,7 +59,7 @@ class CategoryListFragment : Fragment(R.layout.fragment_categorylist){
     private fun initObservers(){
 
         foodViewModel.foodState.observe(viewLifecycleOwner, Observer {
-            Timber.e(it.toString())
+            //Timber.e(it.toString())
             renderState(it)
         })
 

@@ -90,7 +90,7 @@ class FoodViewModel(
                 },
                 {
                     foodState.value = FoodState.Error("Error happened while fetching data from db")
-                    Timber.e(it)
+                    //Timber.e(it)
                 }
             )
         subscriptions.add(subscription)
