@@ -3,9 +3,8 @@ package rs.raf.vezbe11.data.datasources.remote
 import retrofit2.http.GET
 import io.reactivex.Observable
 import retrofit2.http.Query
-import rs.raf.vezbe11.data.models.responses.CategoryResponse
-import rs.raf.vezbe11.data.models.responses.FoodResponse
-import rs.raf.vezbe11.data.models.responses.MealResponse
+import rs.raf.vezbe11.data.models.Ingredient
+import rs.raf.vezbe11.data.models.responses.*
 
 interface FoodService {
 
@@ -33,6 +32,12 @@ interface FoodService {
     @GET("search.php")
     fun getFoodByName(@Query("s") name: String): Observable<List<FoodResponse>>
     //www.themealdb.com/api/json/v1/1/search.php?s=Arrabiata
+    @GET("list.php")
+    fun getAllAreas(@Query("a") area: String): Observable<AreasResponse>
+    @GET("list.php")
+    fun getAllIngredients(@Query("i") ingredient: String): Observable<IngredientsResponse>
+    //https://www.themealdb.com/api/json/v1/1/list.php?a=list
+
 
 
 }

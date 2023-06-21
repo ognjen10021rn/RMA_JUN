@@ -8,14 +8,11 @@ import rs.raf.vezbe11.data.database.converters.MapConverter
 import rs.raf.vezbe11.data.database.converters.StringListConverter
 import rs.raf.vezbe11.data.datasources.local.FoodDao
 import rs.raf.vezbe11.data.datasources.local.NutritionDao
-import rs.raf.vezbe11.data.models.CategoryEntity
-import rs.raf.vezbe11.data.models.FoodByParameterEntity
-import rs.raf.vezbe11.data.models.FoodEntity
-import rs.raf.vezbe11.data.models.IngredientEntity
+import rs.raf.vezbe11.data.models.*
 
 @Database(
-    entities = [CategoryEntity::class, FoodByParameterEntity::class,FoodEntity::class, IngredientEntity::class,],
-    version = 4,
+    entities = [CategoryEntity::class, FoodByParameterEntity::class,FoodEntity::class, IngredientEntity::class,AreaEntity::class],
+    version = 5,
     exportSchema = false)
 @TypeConverters(StringListConverter::class, DateConverter::class, MapConverter::class)//Imamo liste i date,koji nisu primitivni tipovi,pa mu zadajemo
 //kako da ih on prevede na primitivne tipove

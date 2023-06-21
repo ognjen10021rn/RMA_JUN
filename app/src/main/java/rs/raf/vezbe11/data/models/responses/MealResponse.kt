@@ -4,7 +4,7 @@ import com.squareup.moshi.JsonClass
 
 
 @JsonClass(generateAdapter = true)
-class MealResponse (
+data class MealResponse (
     val meals: List<FoodByParameterResponse>
     )
 

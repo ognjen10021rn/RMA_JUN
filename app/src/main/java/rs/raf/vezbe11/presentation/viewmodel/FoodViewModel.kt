@@ -4,28 +4,36 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
-import rs.raf.vezbe11.data.models.CategoryEntity
 import rs.raf.vezbe11.data.repositories.FoodRepository
 import rs.raf.vezbe11.presentation.contract.FoodContract
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.PublishSubject
-import rs.raf.vezbe11.data.models.Category
-import rs.raf.vezbe11.data.models.Resource
+import rs.raf.vezbe11.data.models.*
 import rs.raf.vezbe11.presentation.view.states.AddFoodState
+import rs.raf.vezbe11.presentation.view.states.AreasState
+import rs.raf.vezbe11.presentation.view.states.FoodByParamaterState
 import rs.raf.vezbe11.presentation.view.states.FoodState
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 
 class FoodViewModel(
-    private val foodRepository: FoodRepository
+    private val foodRepository: FoodRepository,
 ) : ViewModel(), FoodContract.ViewModel{
-
+    //Subscriptions
     private val subscriptions = CompositeDisposable() //ovo je mutable live data
+    //States
     override val foodState: MutableLiveData<FoodState> = MutableLiveData()
-    override val addDone: LiveData<AddFoodState> = MutableLiveData()   // Ognjen: Ovo ce biti za insert ako bude potrebno
-    override var categories: MutableLiveData<List<CategoryEntity>> = MutableLiveData() //ovo je mutable live data
+    override val foodByParamaterState: MutableLiveData<FoodByParamaterState> = MutableLiveData()
+    override val addDone: MutableLiveData<AddFoodState> = MutableLiveData()   // Ognjen: Ovo ce biti za insert ako bude potrebno
+    override val areaState: MutableLiveData<AreasState> = MutableLiveData()
+
+    //Liste
+    override var categories: MutableLiveData<List<CategoryEntity>> = MutableLiveData()
+    override val meals: MutableLiveData<List<FoodByParameterEntity>> = MutableLiveData()
+    override var areas: MutableLiveData<List<AreaEntity>> = MutableLiveData()
+
     private val publishSubject: PublishSubject<String> = PublishSubject.create()
 
     //navesti metode u contractu,pa overajdovati
@@ -98,6 +106,104 @@ class FoodViewModel(
 
     override fun getCategoriesByName(name: String) {
         publishSubject.onNext(name)
+    }
+
+    override fun fetchMealsByArea(area: String) {
+        val subscription = foodRepository
+            .fetchFoodByArea(area)
+            .startWith(Resource.Loading())
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    when(it) {
+                        is Resource.Loading -> foodByParamaterState.value = FoodByParamaterState.Loading
+                        is Resource.Success -> foodByParamaterState.value = FoodByParamaterState.DataFetched
+                        is Resource.Error -> foodState.value = FoodState.Error("Error happened while fetching data from the server")
+                    }
+                },
+                {
+                    foodByParamaterState.value = FoodByParamaterState.Error("Error happened while fetching data from the server")
+                    Timber.e(it)
+                }
+            )
+        subscriptions.add(subscription)
+    }
+
+    override fun fetchMealsByCategory(category: String) {
+        val subscription = foodRepository
+            .fetchFoodByCategory(category)
+            .startWith(Resource.Loading())
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    when(it) {
+                        is Resource.Loading -> foodByParamaterState.value = FoodByParamaterState.Loading
+                        is Resource.Success -> foodByParamaterState.value = FoodByParamaterState.DataFetched
+                        is Resource.Error -> foodState.value = FoodState.Error("Error happened while fetching data from the server")
+                    }
+                },
+                {
+                    foodByParamaterState.value = FoodByParamaterState.Error("Error happened while fetching data from the server")
+                    Timber.e(it)
+                }
+            )
+        subscriptions.add(subscription)
+    }
+
+    override fun getAllMealsByParamater(limit: Int, offset: Int) {
+        val subscription = foodRepository
+            .getFoodsByParameter(limit, offset)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    foodByParamaterState.value = FoodByParamaterState.Success(it)
+                },
+                {
+                    foodByParamaterState.value = FoodByParamaterState.Error("Error while fetching meals with paramater: Limit $limit and Offset $offset")
+                }
+            )
+        subscriptions.add(subscription)
+    }
+
+    override fun getAllAreas() {
+        val subscription = foodRepository
+            .getAllAreas()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    areaState.value = AreasState.Success(it)
+                },
+                {
+                    areaState.value = AreasState.Error("Error while fetching areas")
+                }
+            )
+        subscriptions.add(subscription)
+    }
+
+    override fun fetchAllAreas() {
+        val subscription = foodRepository
+            .fetchAllAreas()
+            .startWith(Resource.Loading())
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    when(it) {
+                        is Resource.Loading -> areaState.value = AreasState.Loading
+                        is Resource.Success -> areaState.value = AreasState.DataFetched
+                        is Resource.Error -> areaState.value = AreasState.Error("Error happened while fetching data from the server")
+                    }
+                },
+                {
+                    areaState.value = AreasState.Error("Error happened while fetching data from the server")
+                    Timber.e(it)
+                }
+            )
+        subscriptions.add(subscription)
     }
 
     override fun onCleared() {

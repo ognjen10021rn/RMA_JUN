@@ -2,11 +2,8 @@ package rs.raf.vezbe11.data.repositories
 
 import rs.raf.vezbe11.data.datasources.local.FoodDao
 import rs.raf.vezbe11.data.datasources.remote.FoodService
-import rs.raf.vezbe11.data.models.Resource
 import io.reactivex.Observable
-import rs.raf.vezbe11.data.models.Category
-import rs.raf.vezbe11.data.models.CategoryEntity
-import rs.raf.vezbe11.data.models.FoodByParameterEntity
+import rs.raf.vezbe11.data.models.*
 import timber.log.Timber
 
 
@@ -51,7 +48,7 @@ class FoodRepositoryImplementation(
     override fun getCategoriesByName(name: String): Observable<List<Category>> {
         TODO("Not yet implemented")
     }
-    override fun getFoodByCategory(name: String): Observable<Resource<Unit>> {
+    override fun fetchFoodByCategory(name: String): Observable<Resource<Unit>> {
         return remoteDataSource
             .getFoodsByCategory(name)
             .doOnNext {
@@ -67,12 +64,88 @@ class FoodRepositoryImplementation(
                 Resource.Success(Unit)
             }
 
-
-
-
-
     }
 
+    override fun fetchFoodByArea(area: String): Observable<Resource<Unit>> {
+        return remoteDataSource
+            .getFoodsByArea(area)
+            .doOnNext {
+
+                val mealList = it.meals
+                val entities = mealList.map {
+                    FoodByParameterEntity(it.idMeal,it.strMeal,it.strMealThumb)
+                }
+
+                localDataSource.deleteAndInsertFoodsByParameter(entities)
+            }
+            .map {
+                Resource.Success(Unit)
+            }
+    }
+
+    override fun getFoodsByParameter(limit: Int, offset: Int): Observable<List<FoodByParameter>> {
+        return localDataSource
+            .getFoodsByParameter(limit, offset)
+            .map {
+                it.map {
+                    FoodByParameter(it.id, it.strMeal, it.strThumb)
+                }
+            }
+    }
+
+    override fun fetchAllAreas(): Observable<Resource<Unit>> {
+        var i: Long = 0
+        return remoteDataSource
+            .getAllAreas("list")
+            .doOnNext {
+                val mealList = it.meals
+                val entities = mealList.map {
+                    AreaEntity(i, it.strArea)
+                }
+                i++
+                println(entities)
+                localDataSource.deleteAndInsertAreas(entities)
+            }
+            .map {
+                Resource.Success(Unit)
+            }
+    }
+
+    override fun getAllAreas(): Observable<List<Area>> {
+        return localDataSource
+            .getAllAreas()
+            .map {
+                it.map {
+                    Area(it.strArea)
+                }
+            }
+    }
+
+    override fun fetchAllIngredients(): Observable<Resource<Unit>> {
+        return remoteDataSource
+            .getAllIngredients("list")
+            .doOnNext {
+
+                val mealList = it.meals
+                val entities = mealList.map {
+                    IngredientEntity(it.idIngredient, it.strDescription, it.strIngredient, it.strType)
+                }
+                localDataSource.deleteAndInsertIngredients(entities)
+            }
+            .map {
+                Resource.Success(Unit)
+            }
+    }
+
+    override fun getAllIngredients(): Observable<List<Ingredient>> {
+        return localDataSource
+            .getAllIngredients()
+            .map {
+                it.map {
+                    Ingredient(it.idIngredient, it.strDescription, it.strIngredient, it.strType)
+                }
+            }
+    }
 
 
 }
