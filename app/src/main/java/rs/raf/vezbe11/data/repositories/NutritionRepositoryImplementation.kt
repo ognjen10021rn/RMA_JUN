@@ -3,8 +3,6 @@ package rs.raf.vezbe11.data.repositories
 import io.reactivex.Observable
 import rs.raf.vezbe11.data.datasources.local.NutritionDao
 import rs.raf.vezbe11.data.datasources.remote.NutritionService
-import rs.raf.vezbe11.data.models.Category
-import rs.raf.vezbe11.data.models.CategoryEntity
 import rs.raf.vezbe11.data.models.Food
 import rs.raf.vezbe11.data.models.Resource
 

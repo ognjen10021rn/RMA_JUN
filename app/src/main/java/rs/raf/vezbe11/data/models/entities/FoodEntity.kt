@@ -1,4 +1,4 @@
-package rs.raf.vezbe11.data.models
+package rs.raf.vezbe11.data.models.entities
 
 import androidx.room.Embedded
 import androidx.room.Entity

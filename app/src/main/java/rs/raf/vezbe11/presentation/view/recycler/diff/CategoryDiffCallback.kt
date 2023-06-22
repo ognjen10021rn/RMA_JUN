@@ -2,7 +2,6 @@ package rs.raf.vezbe11.presentation.view.recycler.diff
 
 import androidx.recyclerview.widget.DiffUtil
 import rs.raf.vezbe11.data.models.Category
-import rs.raf.vezbe11.data.models.CategoryEntity
 
 class CategoryDiffCallback : DiffUtil.ItemCallback<Category>(){
 

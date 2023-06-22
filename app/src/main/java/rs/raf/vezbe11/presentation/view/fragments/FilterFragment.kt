@@ -1,6 +1,9 @@
 package rs.raf.vezbe11.presentation.view.fragments
 
+
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,37 +13,36 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.map
 import androidx.recyclerview.widget.LinearLayoutManager
-import org.koin.androidx.viewmodel.compat.SharedViewModelCompat.sharedViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
 import rs.raf.vezbe11.R
 import rs.raf.vezbe11.data.models.Area
 import rs.raf.vezbe11.data.models.Category
-import rs.raf.vezbe11.data.models.CategoryEntity
+import rs.raf.vezbe11.data.models.FoodByParameter
 import rs.raf.vezbe11.data.models.Ingredient
 import rs.raf.vezbe11.databinding.FragmentFilterBinding
 import rs.raf.vezbe11.presentation.contract.FoodContract
 import rs.raf.vezbe11.presentation.view.recycler.adapter.FoodByParameterAdapter
+import rs.raf.vezbe11.presentation.view.recycler.diff.FoodByParameterDiffCallback
 import rs.raf.vezbe11.presentation.view.states.AreasState
 import rs.raf.vezbe11.presentation.view.states.FoodByParamaterState
 import rs.raf.vezbe11.presentation.view.states.FoodState
 import rs.raf.vezbe11.presentation.viewmodel.FoodViewModel
 import timber.log.Timber
 
+
 class FilterFragment : Fragment(R.layout.fragment_filter) {
 
     private val foodViewModel: FoodContract.ViewModel by sharedViewModel<FoodViewModel>()
     private var _binding: FragmentFilterBinding? = null
+    private val binding get() = _binding!!
     private var categories : List<Category>?=null
     private var areas: List<Area>?=null
     private var ingredients: List<Ingredient>?=null
     private lateinit var foodByParameterAdapter: FoodByParameterAdapter
+    private var currentMealList:List<FoodByParameter>?=null
 
-    private val binding get() = _binding!!
-    //TODO treba ti adapter za listu hrane
-    //private lateinit var foodAdapter: FoodAdapter
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -50,9 +52,10 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
         return binding.root
     }
 
+
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         init()
     }
     private fun init(){
@@ -64,22 +67,35 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
 
     private fun initRecycler(){
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
-        foodByParameterAdapter = FoodByParameterAdapter()
+        foodByParameterAdapter = FoodByParameterAdapter(FoodByParameterDiffCallback()){
+            //Prebaciti se na fragment za prikaz detalja o hrani
+
+            foodViewModel.fetchFoodWithId(it.id.toString())
+            //ne pitaj me kako sam ovo uradio,sat vremena se mucim sa ovim(samo ga je nalepio preko vec postojeceg fragmenta)
+            //i oba su bila vidljiva tako jedan preko drugog
+            //Inace mora postojati spoljasni fragment container,ako zelimo da radimo replace-ovanje,i to sam postavio
+            //da bude tab1,i samo u njega da replacujemo ostale fragmente
+            val transaction= parentFragment?.childFragmentManager?.beginTransaction()
+            transaction?.replace(R.id.outerFcvFilterFragment,MealDetailsFragment())
+            transaction?.addToBackStack(null)
+            transaction?.commit()
+
+        }
         binding.recyclerView.adapter = foodByParameterAdapter
     }
     private fun initListObserver(){
         foodViewModel.foodByParamaterState.observe(viewLifecycleOwner, Observer {
-            Timber.e(it.toString())
+
             renderList(it)
         })
     }
     private fun initObservers(){
         foodViewModel.foodState.observe(viewLifecycleOwner, Observer {
-            Timber.e(it.toString())
+
             renderStateFoods(it)
         })
         foodViewModel.areaState.observe(viewLifecycleOwner, Observer {
-            Timber.e(it.toString())
+
             renderAreaState(it)
         })
         foodViewModel.getAllAreas()
@@ -157,7 +173,35 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
 
             }
         }
+        binding.editTextFilterByName.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                if(s.toString().length>=1){
 
+                    val containsString=binding.editTextFilterByName.text.toString()
+                    Timber.e(containsString)
+                    val tmpList= currentMealList?.filter { it.strMeal.toLowerCase().contains(containsString) }
+                    foodByParameterAdapter.submitList(tmpList)
+                    Timber.e(tmpList.toString())
+                }
+                else{
+                    //foodViewModel.getAllMealsByParamater(10, 0)
+                    foodByParameterAdapter.submitList(currentMealList)
+                }
+            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int,count: Int,after: Int) {
+            }
+            override fun onTextChanged(s: CharSequence?, start: Int,before: Int,count: Int) {
+            }
+        })
+        binding.sortByABCCheckBox.setOnCheckedChangeListener { buttonView, isChecked ->
+            if(isChecked){
+                val tmpList= currentMealList?.sortedBy { it.strMeal }
+                foodByParameterAdapter.submitList(tmpList)
+            }
+            else{
+                foodByParameterAdapter.submitList(currentMealList)
+            }
+        }
     }
     private fun addIngredientsToDropdownMenu(){
 
@@ -169,6 +213,7 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
                 showLoadingState(false)
                 println(state.meals)
                 foodByParameterAdapter.submitList(state.meals)
+                currentMealList=state.meals
 
             }
             is FoodByParamaterState.Error -> {
@@ -177,7 +222,7 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
             }
             is FoodByParamaterState.DataFetched -> {
                 showLoadingState(false)
-                Toast.makeText(context, "Fresh data fetched from the server", Toast.LENGTH_LONG).show()
+
             }
             is FoodByParamaterState.Loading -> {
                 showLoadingState(true)
@@ -196,7 +241,7 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
             }
             is FoodState.DataFetched -> {
                 showLoadingState(false)
-                Toast.makeText(context, "Fresh data fetched from the server", Toast.LENGTH_LONG).show()
+
             }
             is FoodState.Loading -> {
                 showLoadingState(true)
@@ -215,7 +260,7 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
             }
             is AreasState.DataFetched -> {
                 showLoadingState(false)
-                Toast.makeText(context, "Fresh data fetched from the server", Toast.LENGTH_LONG).show()
+
             }
             is AreasState.Loading -> {
                 showLoadingState(true)
@@ -233,7 +278,7 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
             }
             is FoodByParamaterState.DataFetched -> {
                 showLoadingState(false)
-                Toast.makeText(context, "Fresh data fetched from the server", Toast.LENGTH_LONG).show()
+
             }
             is FoodByParamaterState.Loading -> {
                 showLoadingState(true)

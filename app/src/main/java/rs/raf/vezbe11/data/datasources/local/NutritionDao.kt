@@ -3,8 +3,8 @@ package rs.raf.vezbe11.data.datasources.local
 import androidx.room.*
 import io.reactivex.Completable
 import io.reactivex.Observable
-import rs.raf.vezbe11.data.models.CategoryEntity
-import rs.raf.vezbe11.data.models.FoodEntity
+import rs.raf.vezbe11.data.models.entities.CategoryEntity
+import rs.raf.vezbe11.data.models.entities.FoodEntity
 
 @Dao
 abstract class NutritionDao {

@@ -3,8 +3,11 @@ package rs.raf.vezbe11.presentation.view.adapters.mainTabsAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import rs.raf.vezbe11.databinding.FragmentOuterfilterfragmentcontainerBinding
 import rs.raf.vezbe11.presentation.view.fragments.CategoryListFragment
-import rs.raf.vezbe11.presentation.view.fragments.FilterFragment
+import rs.raf.vezbe11.presentation.view.fragments.OuterCategoryListFragmentContainer
+import rs.raf.vezbe11.presentation.view.fragments.OuterFilterFragmentContainerView
+
 
 class PagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
@@ -17,8 +20,9 @@ class PagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(frag
 
     override fun getItem(position: Int): Fragment {
         return when(position) {
-            FRAGMENT_1 -> CategoryListFragment() //prikaz kategorije jela
-            FRAGMENT_2 -> FilterFragment()
+            FRAGMENT_1 -> OuterCategoryListFragmentContainer() //prikaz kategorije jela
+            //TODO za prvi fragment isto uraditi,outer fragment container
+            FRAGMENT_2 -> OuterFilterFragmentContainerView()
             else -> CategoryListFragment()
         }
     }

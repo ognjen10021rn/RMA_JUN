@@ -20,19 +20,38 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 
-class CategoryViewHolder (private val itemBinding: LayoutItemCategoryBinding) : RecyclerView.ViewHolder(itemBinding.root){
+class CategoryViewHolder (
+    private val itemBinding: LayoutItemCategoryBinding,
+    onItemClicked: (Int) -> Unit,
+    onButtonClicked: (Int) -> Unit
 
-        fun bind(category: Category){
-            itemBinding.categoryName.text = category.name
-            Glide.with(itemBinding.root)
-                .load(category.imagePath)
-                .into(itemBinding.categoryPicture);
-            itemBinding.buttonConfigure.setOnClickListener{
-                var mPosition:Int = adapterPosition
-                println("\n\nIDDDD\n\n")
-                println(category.id)
+) : RecyclerView.ViewHolder(itemBinding.root){
 
-            }
+
+    init {
+        itemBinding.root.setOnClickListener {
+            onItemClicked.invoke(adapterPosition)
         }
+        itemBinding.buttonConfigure.setOnClickListener{
+            onButtonClicked.invoke(adapterPosition)
+
+
+        }
+
+    }
+
+    fun bind(category: Category, onButtonClicked: (Category) -> Unit){
+
+
+
+        itemBinding.buttonConfigure.setOnClickListener{
+            onButtonClicked.invoke(category)
+        }
+
+        itemBinding.categoryName.text = category.name
+        Glide.with(itemBinding.root)
+            .load(category.imagePath)
+            .into(itemBinding.categoryPicture);
+    }
 
 }
