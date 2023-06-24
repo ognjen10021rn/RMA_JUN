@@ -59,7 +59,7 @@ val coreModule= module {
 
     fun createNutritionRetrofit(moshi: Moshi, httpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl("https://api-ninjas.com/api/nutrition/")
+            .baseUrl("https://api.api-ninjas.com/v1/")
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
             .addConverterFactory(MoshiConverterFactory.create(moshi).asLenient())
             .client(httpClient)

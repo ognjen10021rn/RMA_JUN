@@ -3,8 +3,8 @@ package rs.raf.vezbe11.data.models
 import java.util.Date
 
 data class Food(
-    val idMeal: String,
-    val strMeal: String,
+    val id: Long,
+    val name: String,
     val strCategory: String,
     val strArea: String,
     val strInstructions: String,

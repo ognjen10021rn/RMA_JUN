@@ -5,6 +5,7 @@ import io.reactivex.Completable
 import io.reactivex.Observable
 import rs.raf.vezbe11.data.models.entities.CategoryEntity
 import rs.raf.vezbe11.data.models.entities.FoodEntity
+import rs.raf.vezbe11.data.models.entities.NutritionEntity
 
 @Dao
 abstract class NutritionDao {
@@ -12,24 +13,24 @@ abstract class NutritionDao {
     abstract fun insert(entity: FoodEntity): Completable
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract fun insertAll(entities: List<FoodEntity>): Completable
+    abstract fun insertAll(entities: List<NutritionEntity>): Completable
 
-    @Query("SELECT * FROM foods")
-    abstract fun getAll(): Observable<List<FoodEntity>>
+    @Query("SELECT * FROM nutrition")
+    abstract fun getAllNutrition(): Observable<List<NutritionEntity>>
 
-    @Query("DELETE FROM foods")
+    @Query("DELETE FROM nutrition")
     abstract fun deleteAll()
 
-    @Query("SELECT * FROM foods WHERE name LIKE :name || '%'")
-    abstract fun getByName(name: String): List<FoodEntity>
+    @Query("SELECT * FROM nutrition WHERE name LIKE :name || '%'")
+    abstract fun getByName(name: String): List<NutritionEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    abstract fun insertAllCategories(entities: List<CategoryEntity>): Completable
+    abstract fun insertAllNutrition(entities: List<NutritionEntity>): Completable
 
 
     @Transaction
-    open fun deleteAndInsertAllCategories(entities: List<CategoryEntity>) {
+    open fun deleteAndInsertAllNutrition(entities: List<NutritionEntity>) {
         deleteAll()
-        insertAllCategories(entities).blockingAwait()
+        insertAllNutrition(entities).blockingAwait()
     }
 }

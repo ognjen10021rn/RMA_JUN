@@ -7,7 +7,7 @@ import com.squareup.moshi.JsonClass
 //imena atributa su iz apija
 @JsonClass(generateAdapter = true)
 class FoodResponse(
-    val idMeal:String,
+    val idMeal:Long,
     val strMeal:String,
     val strCategory:String,
     val strArea:String,

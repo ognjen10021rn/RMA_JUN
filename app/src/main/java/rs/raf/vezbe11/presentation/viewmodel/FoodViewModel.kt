@@ -14,11 +14,7 @@ import rs.raf.vezbe11.data.models.entities.AreaEntity
 import rs.raf.vezbe11.data.models.entities.CategoryEntity
 import rs.raf.vezbe11.data.models.entities.FoodByParameterEntity
 import rs.raf.vezbe11.data.models.entities.FoodEntity
-import rs.raf.vezbe11.presentation.view.states.AddFoodState
-import rs.raf.vezbe11.presentation.view.states.AreasState
-import rs.raf.vezbe11.presentation.view.states.FoodByIdState
-import rs.raf.vezbe11.presentation.view.states.FoodByParamaterState
-import rs.raf.vezbe11.presentation.view.states.FoodState
+import rs.raf.vezbe11.presentation.view.states.*
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
@@ -34,13 +30,15 @@ class FoodViewModel(
     override val addDone: MutableLiveData<AddFoodState> = MutableLiveData()   // Ognjen: Ovo ce biti za insert ako bude potrebno
     override val areaState: MutableLiveData<AreasState> = MutableLiveData()
     override val foodByIdState: MutableLiveData<FoodByIdState> = MutableLiveData()
+    override val selectedCategoryState: MutableLiveData<SelectedCategoryState> = MutableLiveData()
+
 
     //Liste
     override var categories: MutableLiveData<List<CategoryEntity>> = MutableLiveData()
     override val meals: MutableLiveData<List<FoodByParameterEntity>> = MutableLiveData()
     override var areas: MutableLiveData<List<AreaEntity>> = MutableLiveData()
     override var selectedFood: MutableLiveData<FoodEntity> = MutableLiveData()
-    override val selectedCategory: LiveData<CategoryEntity> = MutableLiveData()
+    override val selectedCategory: LiveData<Category> = MutableLiveData()
 
 
     private val publishSubject: PublishSubject<String> = PublishSubject.create()
@@ -112,6 +110,23 @@ class FoodViewModel(
                 },
                 {
                     foodByIdState.value = FoodByIdState.Error("Error happened while fetching data from the server")
+
+                }
+            )
+        subscriptions.add(subscription)
+    }
+
+    override fun getFoodWithId(id: String) {
+        val subscription = foodRepository
+            .getFoodById(id)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    foodByIdState.value = FoodByIdState.Success(it)
+                },
+                {
+                    foodByIdState.value = FoodByIdState.Error("Error happened while getting ${id}")
 
                 }
             )
@@ -242,6 +257,21 @@ class FoodViewModel(
         subscriptions.add(subscription)
     }
 
+    override fun getSelectedCategory(category: String) {
+        val subscription = foodRepository
+            .getCategoryByName(category)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    selectedCategoryState.value = SelectedCategoryState.Success(it)
+                },
+                {
+                    selectedCategoryState.value = SelectedCategoryState.Error("Error while fetching category")
+                }
+            )
+        subscriptions.add(subscription)
+    }
 
 
     override fun onCleared() {

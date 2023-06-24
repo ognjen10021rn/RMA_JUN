@@ -5,10 +5,7 @@ import rs.raf.vezbe11.data.datasources.local.FoodDao
 import rs.raf.vezbe11.data.datasources.remote.FoodService
 import io.reactivex.Observable
 import rs.raf.vezbe11.data.models.*
-import rs.raf.vezbe11.data.models.entities.AreaEntity
-import rs.raf.vezbe11.data.models.entities.CategoryEntity
-import rs.raf.vezbe11.data.models.entities.FoodByParameterEntity
-import rs.raf.vezbe11.data.models.entities.IngredientEntity
+import rs.raf.vezbe11.data.models.entities.*
 import timber.log.Timber
 
 
@@ -61,17 +58,35 @@ class FoodRepositoryImplementation(
             .getFoodById(id)
             .doOnNext{
                 val meal = it.meals.get(0)
-                Food(meal.idMeal,meal.strMeal,meal.strCategory,meal.strArea,
-                    meal.strInstructions,meal.strMealThumb,meal.strTags,meal.strYoutube,
-                    meal.strIngredient1,meal.strIngredient2,meal.strIngredient3,meal.strIngredient4,meal.strIngredient5,
-                    meal.strMeasure1,meal.strMeasure2,meal.strMeasure3,meal.strMeasure4,meal.strMeasure5)
-
+//                Food(meal.idMeal,meal.strMeal,meal.strCategory,meal.strArea,
+//                    meal.strInstructions,meal.strMealThumb,meal.strTags,meal.strYoutube,
+//                    meal.strIngredient1,meal.strIngredient2,meal.strIngredient3,meal.strIngredient4,meal.strIngredient5,
+//                    meal.strMeasure1,meal.strMeasure2,meal.strMeasure3,meal.strMeasure4,meal.strMeasure5)
+               val hrana = FoodEntity(meal.idMeal, meal.strMeal, meal.strCategory, meal.strArea,
+                    meal.strInstructions, meal.strMealThumb, meal.strTags, meal.strYoutube,
+                    meal.strIngredient1, meal.strIngredient2, meal.strIngredient3, meal.strIngredient4,
+                    meal.strIngredient5, meal.strMeasure1, meal.strMeasure2, meal.strMeasure3, meal.strMeasure4,
+                    meal. strMeasure5)
+                localDataSource.deleteAndInsertMeal(hrana)
             }
             .map {
                 Resource.Success(Unit)
 
             }
     }
+
+    override fun getFoodById(id: String): Observable<Food> {
+        return localDataSource
+            .getById(id)
+            .map {
+                Food(it.id, it.name, it.strCategory, it.strArea,
+                    it.strInstructions, it.strMealThumb, it.strTags, it.strYoutube,
+                    it.strIngredient1, it.strIngredient2, it.strIngredient3, it.strIngredient4,
+                    it.strIngredient5, it.strMeasure1, it.strMeasure2, it.strMeasure3, it.strMeasure4,
+                    it. strMeasure5)
+            }
+    }
+
     override fun fetchAllIngredients(): Observable<Resource<Unit>> {
         return remoteDataSource
             .getAllIngredients("list")
@@ -113,7 +128,6 @@ class FoodRepositoryImplementation(
                     AreaEntity(i, it.strArea)
                 }
                 i++
-                println(entities)
                 localDataSource.deleteAndInsertAreas(entities)
             }
             .map {
@@ -172,6 +186,15 @@ class FoodRepositoryImplementation(
                     Ingredient(it.idIngredient, it.strDescription, it.strIngredient, it.strType)
                 }
             }
+    }
+
+    override fun getCategoryByName(name: String): Observable<Category> {
+        return localDataSource
+            .getCategoryByName(name)
+            .map {
+                Category(it.id, it.name, it.imagePath, it.description)
+            }
+
     }
 
 

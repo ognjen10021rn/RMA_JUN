@@ -22,12 +22,14 @@ import rs.raf.vezbe11.data.models.FoodByParameter
 import rs.raf.vezbe11.data.models.Ingredient
 import rs.raf.vezbe11.databinding.FragmentFilterBinding
 import rs.raf.vezbe11.presentation.contract.FoodContract
+import rs.raf.vezbe11.presentation.contract.NutritionContract
 import rs.raf.vezbe11.presentation.view.recycler.adapter.FoodByParameterAdapter
 import rs.raf.vezbe11.presentation.view.recycler.diff.FoodByParameterDiffCallback
 import rs.raf.vezbe11.presentation.view.states.AreasState
 import rs.raf.vezbe11.presentation.view.states.FoodByParamaterState
 import rs.raf.vezbe11.presentation.view.states.FoodState
 import rs.raf.vezbe11.presentation.viewmodel.FoodViewModel
+import rs.raf.vezbe11.presentation.viewmodel.NutritionViewModel
 import timber.log.Timber
 
 
@@ -69,7 +71,7 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
         foodByParameterAdapter = FoodByParameterAdapter(FoodByParameterDiffCallback()){
             //Prebaciti se na fragment za prikaz detalja o hrani
-
+            foodViewModel.getFoodWithId(it.id.toString())
             foodViewModel.fetchFoodWithId(it.id.toString())
             //ne pitaj me kako sam ovo uradio,sat vremena se mucim sa ovim(samo ga je nalepio preko vec postojeceg fragmenta)
             //i oba su bila vidljiva tako jedan preko drugog
@@ -85,7 +87,6 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
     }
     private fun initListObserver(){
         foodViewModel.foodByParamaterState.observe(viewLifecycleOwner, Observer {
-
             renderList(it)
         })
     }
@@ -211,7 +212,6 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
         when (state) {
             is FoodByParamaterState.Success -> {
                 showLoadingState(false)
-                println(state.meals)
                 foodByParameterAdapter.submitList(state.meals)
                 currentMealList=state.meals
 

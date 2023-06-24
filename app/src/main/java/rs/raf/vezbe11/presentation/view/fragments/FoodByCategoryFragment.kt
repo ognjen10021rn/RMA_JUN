@@ -48,7 +48,7 @@ class FoodByCategoryFragment :Fragment(R.layout.fragment_foodbycategorylist){
         foodByParameterAdapter = FoodByParameterAdapter(FoodByParameterDiffCallback()){
             foodViewModel.fetchFoodWithId(it.id.toString())
             val transaction= parentFragment?.childFragmentManager?.beginTransaction()
-            transaction?.replace(R.id.outerFcvFilterFragment,MealDetailsFragment())
+            transaction?.replace(R.id.outerFcvCategoriesList, MealDetailsFragment())
             transaction?.addToBackStack(null)
             transaction?.commit()
         }
@@ -60,5 +60,6 @@ class FoodByCategoryFragment :Fragment(R.layout.fragment_foodbycategorylist){
 //        foodViewModel.foodByCategory.observe(viewLifecycleOwner, {
 //            foodByParameterAdapter.submitList(it)
 //        })
+
     }
 }

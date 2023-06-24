@@ -65,6 +65,7 @@ class CategoryListFragment : Fragment(R.layout.fragment_categorylist){
         },{
             //onButtonClicked
 
+            foodViewModel.getSelectedCategory(it.name)
             //TODO u viewmodelu getovati kategoriju po imenu(izvuci odavde,radi) i
             //onda u categoryDetails observovati selektovanu kategoriju i popuniti
 

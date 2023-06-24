@@ -36,10 +36,14 @@ abstract class FoodDao {
     abstract fun getAllAreas(): Observable<List<AreaEntity>>
 
     @Query("SELECT * FROM foods where id = :id")
-    abstract fun getById(id: Long): Observable<FoodEntity>
+    abstract fun getById(id: String): Observable<FoodEntity>
+    @Query("SELECT * FROM categories where name = :category")
+    abstract fun getCategoryByName(category: String): Observable<CategoryEntity>
 
     @Query ("DELETE FROM foods")
     abstract fun deleteAll()
+    @Query ("DELETE FROM categories")
+    abstract fun deleteAllCategories()
 
     @Query ("DELETE FROM foodsByParameter")
     abstract fun deleteAllFoodsByParameter()
@@ -64,12 +68,15 @@ abstract class FoodDao {
     abstract fun insertAllCategories(entities: List<CategoryEntity>): Completable
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun insertAllAreas(entities: List<AreaEntity>): Completable
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun insertMeal(entities: FoodEntity): Completable
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun insertAllIngredients(entities: List<IngredientEntity>): Completable
 
     @Transaction
     open fun deleteAndInsertAllCategories(entities: List<CategoryEntity>) {
-        deleteAll()
+        deleteAllCategories()
         insertAllCategories(entities).blockingAwait() // po defaultu je async, ali mi zelimo da bude sync
     }
 
@@ -87,6 +94,12 @@ abstract class FoodDao {
     open fun deleteAndInsertIngredients(entities: List<IngredientEntity>) {
         deleteAllIngredients()
         insertAllIngredients(entities).blockingAwait()
+    }
+
+    @Transaction
+    open fun deleteAndInsertMeal(entities: FoodEntity) {
+        deleteAll()
+        insertMeal(entities).blockingAwait()
     }
 
 
