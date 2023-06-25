@@ -191,7 +191,6 @@ class FoodRepositoryImplementation(
 
     //TODO isproveravati
     override fun getAllSavedFood(): Observable<List<SavedFood>> {
-
         return localDataSource
             .getAllSavedFood()
             .map {
@@ -205,13 +204,12 @@ class FoodRepositoryImplementation(
     }
 
     override fun insertSavedFood(food: SavedFood): Completable {
-        val savedEntity= SavedFoodEntity(food.id,food.name,food.strInstructions,food.date,food.strCategory,
+        val savedEntity = SavedFoodEntity(food.id,food.name,food.strInstructions,food.date,food.strCategory,
             food.strMealType,food.strMealThumb,food.strYoutube,food.strIngredient1,
             food.strIngredient2,food.strIngredient3,food.strIngredient4,food.strIngredient5,
             food.strMeasure1,food.strMeasure2,food.strMeasure3,food.strMeasure4,food.strMeasure5)
-
-        return localDataSource
-            .insertSavedFood(savedEntity)
+        localDataSource.insertSavedFood(savedEntity)
+        return localDataSource.insertSavedFood(savedEntity)
 
     }
 
@@ -227,13 +225,10 @@ class FoodRepositoryImplementation(
     }
 
     override fun deleteSavedFoodById(id: String): Completable {
-
         return localDataSource.deleteSavedFoodById(id)
 
     }
     override fun updateSavedFood(food: SavedFood): Completable {
-
-
         return localDataSource.updateSavedFood(food.id.toString(),food.name,
             food.strCategory,food.strInstructions,
             food.strMealThumb,food.strYoutube)

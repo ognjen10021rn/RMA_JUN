@@ -33,6 +33,7 @@ class MealDetailsFragment : Fragment(R.layout.fragment_mealdetails){
     private var _binding: FragmentMealdetailsBinding? = null
     private var calories: List<Nutrition>? = null
     private val binding get() = _binding!!
+    private var currentMeal: Food? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -90,6 +91,7 @@ class MealDetailsFragment : Fragment(R.layout.fragment_mealdetails){
     private fun initListeners(){
         binding.buttonSaveMeal.setOnClickListener {
            // foodViewModel.saveMeal()
+            //foodViewModel.getFoodWithId(currentMeal?.id.toString())
             val transaction= parentFragment?.childFragmentManager?.beginTransaction()
             transaction?.replace(R.id.outerFcvFilterFragment, MealDetailsSaveFragment())
             transaction?.addToBackStack(null)
@@ -102,6 +104,7 @@ class MealDetailsFragment : Fragment(R.layout.fragment_mealdetails){
         when(state){
             is FoodByIdState.Success -> {
                 showLoadingState(false)
+                currentMeal = state.selectedMeal
                 val meal = state.selectedMeal
                 binding.mealNameTextView.text = state.selectedMeal.name
                 binding.categoryTextView.text = state.selectedMeal.strCategory

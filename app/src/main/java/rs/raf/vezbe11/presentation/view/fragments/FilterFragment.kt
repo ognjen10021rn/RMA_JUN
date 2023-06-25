@@ -71,7 +71,6 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
         foodByParameterAdapter = FoodByParameterAdapter(FoodByParameterDiffCallback()){
 
-            //TODO setovti selektovan obrok
             foodViewModel.getFoodWithId(it.id.toString())
             foodViewModel.fetchFoodWithId(it.id.toString())
 
@@ -99,6 +98,8 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
         })
         foodViewModel.getAllAreas()
         foodViewModel.fetchAllAreas()
+        foodViewModel.fetchAllCategories()
+        foodViewModel.getAllCategories()
     }
     private fun initListeners() {
         binding.spinnerParameter.onItemSelectedListener =

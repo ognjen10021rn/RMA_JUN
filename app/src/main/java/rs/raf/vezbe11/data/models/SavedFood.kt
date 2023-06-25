@@ -2,12 +2,12 @@ package rs.raf.vezbe11.data.models
 
 class SavedFood(
     val id: Long,
-    val name: String,
-    val strInstructions: String,
-    val strCategory: String,
-    val date:Long,
-    val strMealType: String,
-    val strMealThumb: String,
+    var name: String,
+    var strInstructions: String,
+    var strCategory: String,
+    var date:Long,
+    var strMealType: String,
+    var strMealThumb: String,
     val strYoutube: String,
     val strIngredient1: String?,
     val strIngredient2: String?,

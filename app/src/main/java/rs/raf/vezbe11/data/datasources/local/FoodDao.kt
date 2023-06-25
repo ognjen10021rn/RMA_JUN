@@ -121,7 +121,6 @@ abstract class FoodDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun insertSavedFood(entity: SavedFoodEntity): Completable
 
-    //
 
 
 

@@ -31,8 +31,10 @@ class FoodViewModel(
     override val areaState: MutableLiveData<AreasState> = MutableLiveData()
     override val foodByIdState: MutableLiveData<FoodByIdState> = MutableLiveData()
     override val selectedCategoryState: MutableLiveData<SelectedCategoryState> = MutableLiveData()
+    override val savedFoodState: MutableLiveData<SavedFoodState> = MutableLiveData()
 
-
+    private var currentFood: Food? = null
+    private var savedFood: SavedFood? = null
     //Liste
     override var categories: MutableLiveData<List<CategoryEntity>> = MutableLiveData()
     override val meals: MutableLiveData<List<FoodByParameterEntity>> = MutableLiveData()
@@ -124,6 +126,8 @@ class FoodViewModel(
             .subscribe(
                 {
                     foodByIdState.value = FoodByIdState.Success(it)
+                    currentFood = it
+
                 },
                 {
                     foodByIdState.value = FoodByIdState.Error("Error happened while getting ${id}")
@@ -131,6 +135,9 @@ class FoodViewModel(
                 }
             )
         subscriptions.add(subscription)
+    }
+    override fun getCurrentFood(): Food{
+        return currentFood!!
     }
 
 
@@ -219,9 +226,70 @@ class FoodViewModel(
         publishSubject.onNext(name)
     }
 
+    override fun getAllSavedFood() {
+        val subscription = foodRepository
+            .getAllSavedFood()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    savedFoodState.value = SavedFoodState.Success(it)
+                },
+                {
+                    savedFoodState.value = SavedFoodState.Error("Error happened while getting saved Food")
 
+                }
+            )
+        subscriptions.add(subscription)
+    }
 
+    override fun insertSavedFood(food: SavedFood) {
+        val subscription = foodRepository
+            .insertSavedFood(food)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe()
+        subscriptions.add(subscription)
+    }
 
+    override fun deleteSavedFoodById(id: String) {
+        val subscription = foodRepository
+            .deleteSavedFoodById(id)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe()
+        subscriptions.add(subscription)
+    }
+
+    override fun getSavedFoodById(id: String) {
+        val subscription = foodRepository
+            .getSavedFoodById(id)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    savedFoodState.value = SavedFoodState.Success2(it)
+                    savedFood = it
+                },
+                {
+                    savedFoodState.value = SavedFoodState.Error("Error happened while gettingFood")
+                }
+            )
+        subscriptions.add(subscription)
+    }
+
+    override fun getCurrentSavedFood(): SavedFood{
+        return savedFood!!
+    }
+
+    override fun updateSavedFood(food: SavedFood) {
+        val subscription = foodRepository
+            .updateSavedFood(food)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe()
+        subscriptions.add(subscription)
+    }
 
 
     override fun getAllMealsByParamater(limit: Int, offset: Int) {
