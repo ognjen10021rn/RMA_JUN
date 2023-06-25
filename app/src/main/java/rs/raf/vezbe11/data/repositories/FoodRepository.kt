@@ -1,5 +1,6 @@
 package rs.raf.vezbe11.data.repositories
 
+import io.reactivex.Completable
 import io.reactivex.Observable
 import rs.raf.vezbe11.data.models.*
 
@@ -20,8 +21,19 @@ interface FoodRepository {
     fun getFoodsByParameter(limit: Int, offset: Int): Observable<List<FoodByParameter>>
     fun getAllAreas(): Observable<List<Area>>
     fun getAllIngredients(): Observable<List<Ingredient>>
-
     fun getCategoryByName(name: String): Observable<Category>
+
+    fun getAllSavedFood(): Observable<List<SavedFood>>
+    fun getSavedFoodById(id: String): Observable<SavedFood>
+
+    //TODO proveriti
+    fun insertSavedFood(savedFood: SavedFood): Completable
+    fun deleteSavedFoodById(id: String): Completable
+
+    fun updateSavedFood(savedFood: SavedFood): Completable
+
+
+
 
 
 }

@@ -70,13 +70,11 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
     private fun initRecycler(){
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
         foodByParameterAdapter = FoodByParameterAdapter(FoodByParameterDiffCallback()){
-            //Prebaciti se na fragment za prikaz detalja o hrani
+
+            //TODO setovti selektovan obrok
             foodViewModel.getFoodWithId(it.id.toString())
             foodViewModel.fetchFoodWithId(it.id.toString())
-            //ne pitaj me kako sam ovo uradio,sat vremena se mucim sa ovim(samo ga je nalepio preko vec postojeceg fragmenta)
-            //i oba su bila vidljiva tako jedan preko drugog
-            //Inace mora postojati spoljasni fragment container,ako zelimo da radimo replace-ovanje,i to sam postavio
-            //da bude tab1,i samo u njega da replacujemo ostale fragmente
+
             val transaction= parentFragment?.childFragmentManager?.beginTransaction()
             transaction?.replace(R.id.outerFcvFilterFragment,MealDetailsFragment())
             transaction?.addToBackStack(null)
@@ -307,11 +305,8 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
         val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, categoriesNames!!)
         binding.dropdownItemsSpinner.adapter = adapter
 
-
-
     }
         private fun showViewObjects(){
-            Toast.makeText(context, "PRIKAZUJEM VIEW-OVE", Toast.LENGTH_SHORT).show()
         binding.selectTextView.visibility = View.VISIBLE
         binding.dropdownItemsSpinner.visibility = View.VISIBLE
         binding.filterByTagsTextView.visibility = View.VISIBLE

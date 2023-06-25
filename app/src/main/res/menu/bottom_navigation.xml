@@ -15,6 +15,16 @@
     <item
         android:id="@+id/navigation_3"
         android:icon="@drawable/ic_menu_3"
-        android:title="Treca" />
+        android:title="Trec" />
+
+    <item
+        android:id="@+id/navigation_4"
+        android:icon="@drawable/ic_menu_3"
+        android:title="Cet" />
+
+    <item
+        android:id="@+id/navigation_5"
+        android:icon="@drawable/ic_menu_3"
+        android:title="Pet" />
 
 </menu>

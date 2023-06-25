@@ -13,6 +13,7 @@ import rs.raf.vezbe11.data.models.entities.CategoryEntity
 import rs.raf.vezbe11.data.models.entities.FoodByParameterEntity
 import rs.raf.vezbe11.data.models.entities.FoodEntity
 import rs.raf.vezbe11.data.models.entities.IngredientEntity
+import rs.raf.vezbe11.data.models.entities.SavedFoodEntity
 
 @Dao
 abstract class FoodDao {
@@ -74,6 +75,8 @@ abstract class FoodDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun insertAllIngredients(entities: List<IngredientEntity>): Completable
 
+
+
     @Transaction
     open fun deleteAndInsertAllCategories(entities: List<CategoryEntity>) {
         deleteAllCategories()
@@ -101,6 +104,24 @@ abstract class FoodDao {
         deleteAll()
         insertMeal(entities).blockingAwait()
     }
+
+    //SavedFood
+    @Query("SELECT * FROM savedFoods")
+    abstract fun getAllSavedFood(): Observable<List<SavedFoodEntity>>
+
+    @Query("SELECT * FROM savedFoods WHERE id = :id")
+    abstract fun getSavedFoodById(id: String): Observable<SavedFoodEntity>
+
+    @Query("DELETE FROM savedFoods WHERE id = :id")
+    abstract fun deleteSavedFoodById(id: String): Completable
+
+    @Query("UPDATE savedFoods SET name = :name, strCategory = :category, strInstructions = :instructions, strMealThumb = :image, strYoutube = :youtube WHERE id = :id")
+    abstract fun updateSavedFood(id: String, name: String, category: String, instructions: String, image: String, youtube: String): Completable
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun insertSavedFood(entity: SavedFoodEntity): Completable
+
+    //
 
 
 

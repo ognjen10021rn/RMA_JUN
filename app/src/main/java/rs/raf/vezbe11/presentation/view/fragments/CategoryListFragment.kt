@@ -53,7 +53,7 @@ class CategoryListFragment : Fragment(R.layout.fragment_categorylist){
         binding.recyclerView.layoutManager = LinearLayoutManager(context)
         categoryAdapter = CategoryAdapter(CategoryDiffCallback(),{
         //onItemClicked
-            Toast.makeText(context,"Klik na card",Toast.LENGTH_SHORT).show()
+
             //TODO isto kao i u drugoj lambdi,setovati u viewmodelu selektovanu kategoriju
 
             val transaction=parentFragment?.childFragmentManager?.beginTransaction()
@@ -72,7 +72,7 @@ class CategoryListFragment : Fragment(R.layout.fragment_categorylist){
             val transaction=parentFragment?.childFragmentManager?.beginTransaction()
             transaction?.replace(R.id.outerFcvCategoriesList,CategoryDetailsFragment())
             transaction?.addToBackStack(null)
-            //ne radi backstack nzm zasto,nemoj da se cimas oko toga,samo kada promenis tab pa se vratis radice
+
             transaction?.commit()
         })
 

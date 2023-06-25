@@ -44,11 +44,30 @@ class MealDetailsSaveFragment :Fragment(R.layout.fragment_categorydetails) {
                 override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long
                 ) {
 
-                    //
+                    //Sta ce nam ovo?
                 }
                 override fun onNothingSelected(p0: AdapterView<*>?) {
                 }
             }
+        binding.saveButton.setOnClickListener {
+
+
+
+            val mealType=binding.obrokSpinner.selectedItem.toString() //dorucak...
+            val prepareDate=binding.datePicker.toString()
+
+
+//            val name = binding.nameEt.text.toString()
+//            val category = binding.obrokSpinner.selectedItem.toString()
+//            val ingredients = binding.ingredientsEt.text.toString()
+//            val instructions = binding.instructionsEt.text.toString()
+//            val image = binding.imageEt.text.toString()
+//            val meal = SelectedCategoryState(name, category, ingredients, instructions, image)
+//            foodViewModel.saveMeal(meal)
+
+
+
+        }
 
     }
 

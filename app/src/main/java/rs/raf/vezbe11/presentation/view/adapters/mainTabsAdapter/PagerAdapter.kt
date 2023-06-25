@@ -7,23 +7,30 @@ import rs.raf.vezbe11.databinding.FragmentOuterfilterfragmentcontainerBinding
 import rs.raf.vezbe11.presentation.view.fragments.CategoryListFragment
 import rs.raf.vezbe11.presentation.view.fragments.OuterCategoryListFragmentContainer
 import rs.raf.vezbe11.presentation.view.fragments.OuterFilterFragmentContainerView
+import rs.raf.vezbe11.presentation.view.fragments.OuterThirdTabFragment
 
 
 class PagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
     companion object {
-        private const val ITEM_COUNT = 3
+        private const val ITEM_COUNT = 5
         const val FRAGMENT_1 = 0
         const val FRAGMENT_2 = 1
         const val FRAGMENT_3 = 2
+        const val FRAGMENT_4 = 3
+        const val FRAGMENT_5 = 4
+
     }
 
     override fun getItem(position: Int): Fragment {
         return when(position) {
             FRAGMENT_1 -> OuterCategoryListFragmentContainer() //prikaz kategorije jela
-            //TODO za prvi fragment isto uraditi,outer fragment container
+
             FRAGMENT_2 -> OuterFilterFragmentContainerView()
-            else -> CategoryListFragment()
+            FRAGMENT_3 -> OuterThirdTabFragment()
+            FRAGMENT_4 -> OuterFilterFragmentContainerView()
+            else -> OuterFilterFragmentContainerView()
+
         }
     }
 
@@ -33,7 +40,10 @@ class PagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(frag
         when(position) {
             FRAGMENT_1 -> "1"
             FRAGMENT_2 -> "2"
-            else -> "3"
+            FRAGMENT_3 -> "3"
+            FRAGMENT_4 -> "4"
+            else -> "5"
+
         }
 
 

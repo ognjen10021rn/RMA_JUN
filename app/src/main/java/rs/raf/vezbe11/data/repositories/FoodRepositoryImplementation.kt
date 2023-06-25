@@ -1,6 +1,7 @@
 package rs.raf.vezbe11.data.repositories
 
 import androidx.core.graphics.createBitmap
+import io.reactivex.Completable
 import rs.raf.vezbe11.data.datasources.local.FoodDao
 import rs.raf.vezbe11.data.datasources.remote.FoodService
 import io.reactivex.Observable
@@ -194,7 +195,57 @@ class FoodRepositoryImplementation(
             .map {
                 Category(it.id, it.name, it.imagePath, it.description)
             }
+    }
 
+    //TODO isproveravati
+    override fun getAllSavedFood(): Observable<List<SavedFood>> {
+
+        return localDataSource
+            .getAllSavedFood()
+            .map {
+                it.map {
+                    SavedFood(it.id,it.name,it.strInstructions,it.strCategory,
+                    it.strMealType,it.strMealThumb,it.strYoutube,it.strIngredient1,
+                    it.strIngredient2,it.strIngredient3,it.strIngredient4,it.strIngredient5,
+                    it.strMeasure1,it.strMeasure2,it.strMeasure3,it.strMeasure4,it.strMeasure5)
+                }
+            }
+
+    }
+
+    override fun insertSavedFood(savedFood: SavedFood): Completable {
+        val savedEntity= SavedFoodEntity(savedFood.id,savedFood.name,savedFood.strInstructions,savedFood.strCategory,
+            savedFood.strMealType,savedFood.strMealThumb,savedFood.strYoutube,savedFood.strIngredient1,
+            savedFood.strIngredient2,savedFood.strIngredient3,savedFood.strIngredient4,savedFood.strIngredient5,
+            savedFood.strMeasure1,savedFood.strMeasure2,savedFood.strMeasure3,savedFood.strMeasure4,savedFood.strMeasure5)
+
+        return localDataSource
+            .insertSavedFood(savedEntity)
+
+    }
+
+    override fun getSavedFoodById(id: String): Observable<SavedFood> {
+        return localDataSource
+            .getSavedFoodById(id)
+            .map {
+                SavedFood(it.id,it.name,it.strInstructions,it.strCategory,
+                    it.strMealType,it.strMealThumb,it.strYoutube,it.strIngredient1,
+                    it.strIngredient2,it.strIngredient3,it.strIngredient4,it.strIngredient5,
+                    it.strMeasure1,it.strMeasure2,it.strMeasure3,it.strMeasure4,it.strMeasure5)
+            }
+    }
+
+    override fun deleteSavedFoodById(id: String): Completable {
+
+        return localDataSource.deleteSavedFoodById(id)
+
+    }
+    override fun updateSavedFood(food: SavedFood): Completable {
+
+
+        return localDataSource.updateSavedFood(food.id.toString(),food.name,
+            food.strCategory,food.strInstructions,
+            food.strMealThumb,food.strYoutube)
     }
 
 
