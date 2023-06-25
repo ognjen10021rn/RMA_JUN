@@ -2,6 +2,7 @@ package rs.raf.vezbe11.data.models.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.sql.Date
 
 @Entity(tableName = "savedFoods")
 class SavedFoodEntity(
@@ -10,6 +11,7 @@ class SavedFoodEntity(
     val id: Long,
     val name: String,
     val strInstructions: String,
+    val date:Long,
     val strCategory: String,
     val strMealType: String,
     val strMealThumb: String,

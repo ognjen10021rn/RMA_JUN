@@ -1,6 +1,5 @@
 package rs.raf.vezbe11.data.repositories
 
-import androidx.core.graphics.createBitmap
 import io.reactivex.Completable
 import rs.raf.vezbe11.data.datasources.local.FoodDao
 import rs.raf.vezbe11.data.datasources.remote.FoodService
@@ -161,10 +160,6 @@ class FoodRepositoryImplementation(
             }
     }
 
-
-
-
-
     override fun getAllAreas(): Observable<List<Area>> {
         return localDataSource
             .getAllAreas()
@@ -174,9 +169,6 @@ class FoodRepositoryImplementation(
                 }
             }
     }
-
-
-
 
 
     override fun getAllIngredients(): Observable<List<Ingredient>> {
@@ -204,20 +196,19 @@ class FoodRepositoryImplementation(
             .getAllSavedFood()
             .map {
                 it.map {
-                    SavedFood(it.id,it.name,it.strInstructions,it.strCategory,
+                    SavedFood(it.id,it.name,it.strInstructions,it.strCategory,it.date,
                     it.strMealType,it.strMealThumb,it.strYoutube,it.strIngredient1,
                     it.strIngredient2,it.strIngredient3,it.strIngredient4,it.strIngredient5,
                     it.strMeasure1,it.strMeasure2,it.strMeasure3,it.strMeasure4,it.strMeasure5)
                 }
             }
-
     }
 
-    override fun insertSavedFood(savedFood: SavedFood): Completable {
-        val savedEntity= SavedFoodEntity(savedFood.id,savedFood.name,savedFood.strInstructions,savedFood.strCategory,
-            savedFood.strMealType,savedFood.strMealThumb,savedFood.strYoutube,savedFood.strIngredient1,
-            savedFood.strIngredient2,savedFood.strIngredient3,savedFood.strIngredient4,savedFood.strIngredient5,
-            savedFood.strMeasure1,savedFood.strMeasure2,savedFood.strMeasure3,savedFood.strMeasure4,savedFood.strMeasure5)
+    override fun insertSavedFood(food: SavedFood): Completable {
+        val savedEntity= SavedFoodEntity(food.id,food.name,food.strInstructions,food.date,food.strCategory,
+            food.strMealType,food.strMealThumb,food.strYoutube,food.strIngredient1,
+            food.strIngredient2,food.strIngredient3,food.strIngredient4,food.strIngredient5,
+            food.strMeasure1,food.strMeasure2,food.strMeasure3,food.strMeasure4,food.strMeasure5)
 
         return localDataSource
             .insertSavedFood(savedEntity)
@@ -228,7 +219,7 @@ class FoodRepositoryImplementation(
         return localDataSource
             .getSavedFoodById(id)
             .map {
-                SavedFood(it.id,it.name,it.strInstructions,it.strCategory,
+                SavedFood(it.id,it.name,it.strInstructions,it.strCategory,it.date,
                     it.strMealType,it.strMealThumb,it.strYoutube,it.strIngredient1,
                     it.strIngredient2,it.strIngredient3,it.strIngredient4,it.strIngredient5,
                     it.strMeasure1,it.strMeasure2,it.strMeasure3,it.strMeasure4,it.strMeasure5)

@@ -5,6 +5,7 @@ class SavedFood(
     val name: String,
     val strInstructions: String,
     val strCategory: String,
+    val date:Long,
     val strMealType: String,
     val strMealThumb: String,
     val strYoutube: String,
