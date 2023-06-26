@@ -45,7 +45,7 @@ class FoodViewModel(
 
     private val publishSubject: PublishSubject<String> = PublishSubject.create()
 
-    //navesti metode u contractu,pa overajdovati
+
 
     init {
         val subscription = publishSubject

@@ -6,7 +6,9 @@ import androidx.fragment.app.FragmentPagerAdapter
 import rs.raf.vezbe11.databinding.FragmentOuterfilterfragmentcontainerBinding
 import rs.raf.vezbe11.presentation.view.fragments.CategoryListFragment
 import rs.raf.vezbe11.presentation.view.fragments.OuterCategoryListFragmentContainer
+import rs.raf.vezbe11.presentation.view.fragments.OuterFifthTabFragment
 import rs.raf.vezbe11.presentation.view.fragments.OuterFilterFragmentContainerView
+import rs.raf.vezbe11.presentation.view.fragments.OuterFourthTabFragment
 import rs.raf.vezbe11.presentation.view.fragments.OuterThirdTabFragment
 
 
@@ -28,8 +30,8 @@ class PagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(frag
 
             FRAGMENT_2 -> OuterFilterFragmentContainerView()
             FRAGMENT_3 -> OuterThirdTabFragment()
-            FRAGMENT_4 -> OuterFilterFragmentContainerView()
-            else -> OuterFilterFragmentContainerView()
+            FRAGMENT_4 -> OuterFourthTabFragment()
+            else -> OuterFifthTabFragment()
 
         }
     }

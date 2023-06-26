@@ -153,22 +153,26 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
                 }
             }
 
-        binding.buttonNext.setOnClickListener {
+        binding.buttonNextt.setOnClickListener {
             binding.paginationPageTextView.text=(binding.paginationPageTextView.text.toString().toInt()+1).toString()
             val pageNumber=binding.paginationPageTextView.text.toString().toInt()
             println(pageNumber)
-            val limit=pageNumber*10
-            val offset=10
+//            val limit=pageNumber*10  e moj ognjene sta je ovo
+//            val offset=10
+            val limit=10
+            val offset=pageNumber*10
             foodViewModel.getAllMealsByParamater(limit, offset)
 
 
         }
-        binding.buttonPrevious.setOnClickListener {
+        binding.buttonPreviouss.setOnClickListener {
             if(binding.paginationPageTextView.text.toString().toInt()>1){
                 binding.paginationPageTextView.text=(binding.paginationPageTextView.text.toString().toInt()-1).toString()
                 val pageNumber=binding.paginationPageTextView.text.toString().toInt()
-                val limit=pageNumber/10
-                val offset=10
+//                val limit=pageNumber/10
+//                val offset=10
+                val limit=10
+                val offset=pageNumber*10
                 foodViewModel.getAllMealsByParamater(limit, offset)
 
             }
@@ -316,9 +320,10 @@ class FilterFragment : Fragment(R.layout.fragment_filter) {
         binding.editTextFilterByTags.visibility = View.VISIBLE
         binding.sortByABCCheckBox.visibility = View.VISIBLE
         binding.recyclerView.visibility = View.VISIBLE
-        binding.buttonNext.visibility = View.VISIBLE
-        binding.buttonPrevious.visibility = View.VISIBLE
+        binding.buttonNextt.visibility = View.VISIBLE
+        binding.buttonPreviouss.visibility = View.VISIBLE
         binding.paginationPageTextView.visibility = View.VISIBLE
+            binding.paginationPageTextView.text="1"
 
     }
 

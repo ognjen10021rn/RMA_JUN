@@ -1,6 +1,9 @@
 package rs.raf.vezbe11.presentation.view.fragments
 
+import android.Manifest
+import android.content.Intent
 import android.os.Bundle
+import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -43,6 +46,8 @@ class EditSavedFoodFragment : Fragment(R.layout.fragment_editsavedfood) {
     private var food: SavedFood? = null
     private var calories: List<Nutrition>? = null
     private var listCalories: List<Nutrition>? = null
+    private val permissions = arrayOf(Manifest.permission.CAMERA)
+    private val PERMISSION_ACCEPTED=1
 
 
     override fun onCreateView(
@@ -61,9 +66,35 @@ class EditSavedFoodFragment : Fragment(R.layout.fragment_editsavedfood) {
     }
     private fun init(){
         initObservers()
-        initView()
         initListeners()
+        initPermissions()
     }
+
+    private fun initPermissions(){
+        binding.imageView.setOnClickListener(View.OnClickListener {
+
+            if (PERMISSION_ACCEPTED == 1) {
+                catchFoodPhoto()
+
+            } else {
+                requestPermissions(permissions, PERMISSION_ACCEPTED)
+                if (PERMISSION_ACCEPTED == 1) {
+                    catchFoodPhoto()
+
+                }
+            }
+        })
+
+
+
+    }
+    private fun catchFoodPhoto(){
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        startActivityForResult(intent, 1)
+
+
+    }
+
     private fun initObservers(){
         foodViewModel.foodState.observe(viewLifecycleOwner, Observer {
             renderStateFoods(it)
@@ -78,18 +109,6 @@ class EditSavedFoodFragment : Fragment(R.layout.fragment_editsavedfood) {
         food = foodViewModel.getCurrentSavedFood()
         foodViewModel.getSavedFoodById(food!!.id.toString())
         foodViewModel.getAllCategories()
-    }
-    private fun initView(){
-
-        //TODO dodati u viewmodelu selectedSavedFood,zato sto savedFood i Food nisu istu,savedFood ima date
-        //binding.nameEditText.setText(foodViewModel.getSelectedSavedFood().name)
-
-
-
-//        Glide.with(binding.imageView.context)
-//            .load(foodViewModel.getSelectedSavedFood().image)
-//            .into(binding.foodImage)
-
     }
     private fun initListeners(){
         binding.buttonSave.setOnClickListener {
