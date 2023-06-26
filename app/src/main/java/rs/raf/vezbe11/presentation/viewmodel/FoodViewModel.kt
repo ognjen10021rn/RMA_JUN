@@ -268,8 +268,8 @@ class FoodViewModel(
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
                 {
-                    savedFoodState.value = SavedFoodState.Success2(it)
                     savedFood = it
+                    savedFoodState.value = SavedFoodState.Success2(it)
                 },
                 {
                     savedFoodState.value = SavedFoodState.Error("Error happened while gettingFood")
@@ -277,7 +277,9 @@ class FoodViewModel(
             )
         subscriptions.add(subscription)
     }
-
+    override fun setCurrentSavedFood(food: SavedFood){
+        savedFood = food;
+    }
     override fun getCurrentSavedFood(): SavedFood{
         return savedFood!!
     }

@@ -20,18 +20,23 @@ import rs.raf.vezbe11.databinding.FragmentCategorydetailsBinding
 import rs.raf.vezbe11.databinding.FragmentFilterBinding
 import rs.raf.vezbe11.databinding.FragmentMealdetailsaveBinding
 import rs.raf.vezbe11.presentation.contract.FoodContract
+import rs.raf.vezbe11.presentation.contract.NutritionContract
 import rs.raf.vezbe11.presentation.view.states.FoodByIdState
+import rs.raf.vezbe11.presentation.view.states.NutritionState
 import rs.raf.vezbe11.presentation.view.states.SelectedCategoryState
 import rs.raf.vezbe11.presentation.viewmodel.FoodViewModel
+import rs.raf.vezbe11.presentation.viewmodel.NutritionViewModel
 import java.util.Calendar
 import java.util.UUID
 
 class MealDetailsSaveFragment :Fragment(R.layout.fragment_categorydetails) {
 
     private val foodViewModel: FoodContract.ViewModel by sharedViewModel<FoodViewModel>()
+    private val nutritionModel: NutritionContract.ViewModel by sharedViewModel<NutritionViewModel>()
     private var _binding: FragmentMealdetailsaveBinding? = null
     private val binding get() = _binding!!
     private var food: Food? = null
+    private var finalCalories: Double = 0.0
 
 
     override fun onCreateView(
@@ -47,11 +52,15 @@ class MealDetailsSaveFragment :Fragment(R.layout.fragment_categorydetails) {
         super.onViewCreated(view, savedInstanceState)
         init()
         initObservers()
+
     }
 
     private fun init(){
         foodViewModel.foodByIdState.observe(viewLifecycleOwner, Observer{
             renderStateFoodById(it)
+        })
+        nutritionModel.nutritionState.observe(viewLifecycleOwner, Observer{
+            renderNutrition(it)
         })
         food = foodViewModel.getCurrentFood()
         foodViewModel.getFoodWithId(food!!.id.toString())
@@ -59,15 +68,9 @@ class MealDetailsSaveFragment :Fragment(R.layout.fragment_categorydetails) {
     private fun initObservers(){
         binding.saveButton.setOnClickListener {
             val mealType = binding.obrokSpinner.selectedItem.toString() //dorucak...
-            val prepareDate1 = binding.datePicker.dayOfMonth
-            val prepareDate2 = binding.datePicker.month
-            val prepareDate3 = binding.datePicker.year
-            val cal = Calendar.getInstance()
-            cal.set(prepareDate3, prepareDate2, prepareDate1)
-            val time = cal.time
-            if (food != null){
+
                 val entity = SavedFood(System.currentTimeMillis(), food!!.name, food!!.strInstructions, food!!.strCategory,
-                    time.time, mealType, food!!.strMealThumb, food!!.strYoutube, food!!.strIngredient1,
+                    binding.datePicker.dayOfMonth, binding.datePicker.month, binding.datePicker.year, finalCalories,mealType, food!!.strMealThumb, food!!.strYoutube, food!!.strIngredient1,
                     food!!.strIngredient2, food!!.strIngredient3, food!!.strIngredient4, food!!.strIngredient5,
                     food!!.strMeasure1, food!!.strMeasure2, food!!.strMeasure3, food!!.strMeasure4, food!!.strMeasure5)
 
@@ -77,7 +80,6 @@ class MealDetailsSaveFragment :Fragment(R.layout.fragment_categorydetails) {
                 transaction?.replace(R.id.outerFcvFilterFragment, SavedFoodFragment())
                 transaction?.addToBackStack(null)
                 transaction?.commit()
-            }
 
 
 //            val name = binding.nameEt.text.toString()
@@ -93,6 +95,31 @@ class MealDetailsSaveFragment :Fragment(R.layout.fragment_categorydetails) {
         }
 
     }
+    private fun renderNutrition(state: NutritionState){
+        when(state){
+            is NutritionState.Success -> {
+                showLoadingState(false)
+                //var finalCalories : Double = 0.0
+
+                for(cal in state.nutrition){
+                    finalCalories += cal.calories
+                }
+
+            }
+            is NutritionState.Error -> {
+                showLoadingState(false)
+                Toast.makeText(context, state.message, Toast.LENGTH_SHORT).show()
+            }
+            is NutritionState.DataFetched -> {
+                showLoadingState(false)
+                //Toast.makeText(context, "Fetched Nutrition!", Toast.LENGTH_SHORT).show()
+            }
+            is NutritionState.Loading -> {
+                showLoadingState(true)
+            }
+        }
+
+    }
     private fun renderStateFoodById(state: FoodByIdState){
         when(state){
             is FoodByIdState.Success -> {
@@ -103,6 +130,11 @@ class MealDetailsSaveFragment :Fragment(R.layout.fragment_categorydetails) {
                 Glide.with(this)
                     .load(state.selectedMeal.strMealThumb)
                     .into(binding.imageView);
+                val nutritionCalories = "${food!!.strMeasure1} ${food!!.strIngredient1}, ${food!!.strMeasure2} ${food!!.strIngredient2}, " +
+                        "${food!!.strMeasure3} ${food!!.strIngredient3}, ${food!!.strMeasure4} ${food!!.strIngredient4}, " +
+                        "${food!!.strMeasure5} ${food!!.strIngredient5}"
+                nutritionModel.fetchAllNutritionByQuery(nutritionCalories)
+                nutritionModel.getAllNutrition()
             }
             is FoodByIdState.Error -> {
                 showLoadingState(false)

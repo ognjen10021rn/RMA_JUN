@@ -195,7 +195,7 @@ class FoodRepositoryImplementation(
             .getAllSavedFood()
             .map {
                 it.map {
-                    SavedFood(it.id,it.name,it.strInstructions,it.strCategory,it.date,
+                    SavedFood(it.id,it.name,it.strInstructions,it.strCategory,it.dayOfMonth, it.month,it.year, it.calories,
                     it.strMealType,it.strMealThumb,it.strYoutube,it.strIngredient1,
                     it.strIngredient2,it.strIngredient3,it.strIngredient4,it.strIngredient5,
                     it.strMeasure1,it.strMeasure2,it.strMeasure3,it.strMeasure4,it.strMeasure5)
@@ -204,7 +204,8 @@ class FoodRepositoryImplementation(
     }
 
     override fun insertSavedFood(food: SavedFood): Completable {
-        val savedEntity = SavedFoodEntity(food.id,food.name,food.strInstructions,food.date,food.strCategory,
+        val savedEntity = SavedFoodEntity(food.id,food.name,food.strInstructions,food.dayOfMonth, food.month, food.year, food.calories,
+            food.strCategory,
             food.strMealType,food.strMealThumb,food.strYoutube,food.strIngredient1,
             food.strIngredient2,food.strIngredient3,food.strIngredient4,food.strIngredient5,
             food.strMeasure1,food.strMeasure2,food.strMeasure3,food.strMeasure4,food.strMeasure5)
@@ -217,7 +218,7 @@ class FoodRepositoryImplementation(
         return localDataSource
             .getSavedFoodById(id)
             .map {
-                SavedFood(it.id,it.name,it.strInstructions,it.strCategory,it.date,
+                SavedFood(it.id,it.name,it.strInstructions,it.strCategory,it.dayOfMonth, it.month, it.year, it.calories,
                     it.strMealType,it.strMealThumb,it.strYoutube,it.strIngredient1,
                     it.strIngredient2,it.strIngredient3,it.strIngredient4,it.strIngredient5,
                     it.strMeasure1,it.strMeasure2,it.strMeasure3,it.strMeasure4,it.strMeasure5)

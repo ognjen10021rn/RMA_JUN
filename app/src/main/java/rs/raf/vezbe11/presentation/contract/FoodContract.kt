@@ -50,6 +50,8 @@ interface FoodContract {
         fun getAllMealsByParamater(limit: Int, offset: Int);
         fun getAllAreas();
 
+        fun setCurrentSavedFood(food: SavedFood)
+
         fun getSelectedCategory(category: String);
         fun getCurrentFood(): Food
 

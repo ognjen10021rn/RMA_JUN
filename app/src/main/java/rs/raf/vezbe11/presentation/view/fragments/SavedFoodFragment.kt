@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.koin.android.ext.android.bind
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -44,8 +45,8 @@ class SavedFoodFragment : Fragment(R.layout.fragment_savedmealslist) {
     }
     private fun init(){
 
-        initRecycler()
         initObservers()
+        initRecycler()
 
     }
 
@@ -53,7 +54,9 @@ class SavedFoodFragment : Fragment(R.layout.fragment_savedmealslist) {
       binding.savedMealsRecyclerView.layoutManager = LinearLayoutManager(context)
         savedFoodAdapter = SavedFoodAdapter(SavedFoodDiffCallback(),{
             //onItemClicked
+
             foodViewModel.getSavedFoodById(it.id.toString())
+            foodViewModel.setCurrentSavedFood(it)
             //TODO setovati selektovanu hranu "setSelectedSavedFood"
             val transaction=parentFragment?.childFragmentManager?.beginTransaction()
             transaction?.replace(R.id.outerFcvThirdTabFragment, EditSavedFoodFragment())
@@ -68,13 +71,12 @@ class SavedFoodFragment : Fragment(R.layout.fragment_savedmealslist) {
 
         })
 
-
         binding.savedMealsRecyclerView.adapter = savedFoodAdapter
 
 
     }
     private fun initObservers(){
-        foodViewModel.savedFoodState.observe(viewLifecycleOwner, {
+        foodViewModel.savedFoodState.observe(viewLifecycleOwner, Observer{
             renderFood(it)
         })
 
@@ -86,6 +88,10 @@ class SavedFoodFragment : Fragment(R.layout.fragment_savedmealslist) {
             is SavedFoodState.Success -> {
                 showLoadingState(false)
                 savedFoodAdapter.submitList(state.savedFoods)
+            }
+            is SavedFoodState.Success2 -> {
+                showLoadingState(false)
+                foodViewModel.setCurrentSavedFood(state.savedFood)
             }
             is SavedFoodState.Error -> {
                 showLoadingState(false)
