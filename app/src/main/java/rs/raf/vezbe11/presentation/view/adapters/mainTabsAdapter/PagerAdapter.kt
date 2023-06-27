@@ -21,13 +21,11 @@ class PagerAdapter(fragmentManager: FragmentManager) : FragmentPagerAdapter(frag
         const val FRAGMENT_3 = 2
         const val FRAGMENT_4 = 3
         const val FRAGMENT_5 = 4
-
     }
 
     override fun getItem(position: Int): Fragment {
         return when(position) {
             FRAGMENT_1 -> OuterCategoryListFragmentContainer() //prikaz kategorije jela
-
             FRAGMENT_2 -> OuterFilterFragmentContainerView()
             FRAGMENT_3 -> OuterThirdTabFragment()
             FRAGMENT_4 -> OuterFourthTabFragment()
