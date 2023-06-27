@@ -28,6 +28,8 @@ interface FoodService {
     fun getFoodById(@Query("i") id: String): Observable<FoodListResponse>
     //API VRACA LISTU,SA JEDNIM OBROKOM
     //www.themealdb.com/api/json/v1/1/lookup.php?i=52772
+    @GET("search.php")
+    fun getFood(@Query("s") name: String): Observable<FoodListResponse>
 
     @GET("search.php")
     fun getFoodByName(@Query("s") name: String): Observable<List<FoodResponse>>

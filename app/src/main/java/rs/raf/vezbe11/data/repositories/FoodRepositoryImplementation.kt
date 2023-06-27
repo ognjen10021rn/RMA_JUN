@@ -74,6 +74,29 @@ class FoodRepositoryImplementation(
 
             }
     }
+    override fun fetchAllFoods(): Observable<Resource<Unit>> {
+        return remoteDataSource
+            .getFood("")
+            .doOnNext{
+                val test = it.meals
+                val entities = test.map {
+                    FoodEntity(it.idMeal, it.strMeal, it.strCategory, it.strArea,
+                        it.strInstructions, it.strMealThumb, it.strTags, it.strYoutube,
+                        it.strIngredient1, it.strIngredient2, it.strIngredient3, it.strIngredient4,
+                        it.strIngredient5, it.strMeasure1, it.strMeasure2, it.strMeasure3, it.strMeasure4,
+                        it. strMeasure5)
+                }
+//                Food(meal.idMeal,meal.strMeal,meal.strCategory,meal.strArea,
+//                    meal.strInstructions,meal.strMealThumb,meal.strTags,meal.strYoutube,
+//                    meal.strIngredient1,meal.strIngredient2,meal.strIngredient3,meal.strIngredient4,meal.strIngredient5,
+//                    meal.strMeasure1,meal.strMeasure2,meal.strMeasure3,meal.strMeasure4,meal.strMeasure5)
+                localDataSource.deleteAndInsertAllFoods(entities)
+            }
+            .map {
+                Resource.Success(Unit)
+
+            }
+    }
 
     override fun getFoodById(id: String): Observable<Food> {
         return localDataSource
@@ -84,6 +107,19 @@ class FoodRepositoryImplementation(
                     it.strIngredient1, it.strIngredient2, it.strIngredient3, it.strIngredient4,
                     it.strIngredient5, it.strMeasure1, it.strMeasure2, it.strMeasure3, it.strMeasure4,
                     it. strMeasure5)
+            }
+    }
+    override fun getAllFoodById(id: String): Observable<List<Food>> {
+        return localDataSource
+            .getAllFoods()
+            .map {
+                it.map {
+                    Food(it.id, it.name, it.strCategory, it.strArea,
+                        it.strInstructions, it.strMealThumb, it.strTags, it.strYoutube,
+                        it.strIngredient1, it.strIngredient2, it.strIngredient3, it.strIngredient4,
+                        it.strIngredient5, it.strMeasure1, it.strMeasure2, it.strMeasure3, it.strMeasure4,
+                        it. strMeasure5)
+                }
             }
     }
 

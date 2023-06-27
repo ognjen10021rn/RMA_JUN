@@ -13,6 +13,8 @@ interface FoodRepository {
     fun fetchAllAreas(): Observable<Resource<Unit>>
     fun fetchFoodById(id: String): Observable<Resource<Unit>>
     fun getFoodById(id: String): Observable<Food>
+    fun fetchAllFoods(): Observable<Resource<Unit>>
+    fun getAllFoodById(id: String): Observable<List<Food>>
 
     //GETS
     fun fetchAllIngredients(): Observable<Resource<Unit>>

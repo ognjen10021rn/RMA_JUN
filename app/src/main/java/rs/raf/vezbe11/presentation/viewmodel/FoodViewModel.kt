@@ -32,6 +32,7 @@ class FoodViewModel(
     override val foodByIdState: MutableLiveData<FoodByIdState> = MutableLiveData()
     override val selectedCategoryState: MutableLiveData<SelectedCategoryState> = MutableLiveData()
     override val savedFoodState: MutableLiveData<SavedFoodState> = MutableLiveData()
+    override val foodState2: MutableLiveData<FoodState2> = MutableLiveData()
 
     private var currentFood: Food? = null
     private var savedFood: SavedFood? = null
@@ -194,11 +195,50 @@ class FoodViewModel(
                     when(it) {
                         is Resource.Loading -> foodByParamaterState.value = FoodByParamaterState.Loading
                         is Resource.Success -> foodByParamaterState.value = FoodByParamaterState.DataFetched
-                        is Resource.Error -> foodState.value = FoodState.Error("Error happened while fetching data from the server")
+                        is Resource.Error -> foodByParamaterState.value = FoodByParamaterState.Error("Error happened while fetching data from the server")
                     }
                 },
                 {
                     foodByParamaterState.value = FoodByParamaterState.Error("Error happened while fetching data from the server")
+
+                }
+            )
+        subscriptions.add(subscription)
+    }
+
+    override fun getAllFoods() {
+        val subscription = foodRepository
+            .getAllFoodById("")
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    foodState2.value = FoodState2.Success(it)
+                },
+                {
+                    foodState2.value = FoodState2.Error("Error happened while fetching data from db")
+
+                }
+            )
+        subscriptions.add(subscription)
+    }
+
+    override fun fetchAllFoods() {
+        val subscription = foodRepository
+            .fetchAllFoods()
+            .startWith(Resource.Loading())
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                {
+                    when(it) {
+                        is Resource.Loading -> foodState2.value = FoodState2.Loading
+                        is Resource.Success -> foodState2.value = FoodState2.DataFetched
+                        is Resource.Error -> foodState2.value = FoodState2.Error("Error happened while fetching data from the server")
+                    }
+                },
+                {
+                    foodState2.value = FoodState2.Error("Error happened while fetching data from the server")
 
                 }
             )

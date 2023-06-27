@@ -1,5 +1,6 @@
 package rs.raf.vezbe11.presentation.view.recycler.viewholder
 
+import android.graphics.BitmapFactory
 import android.net.Uri
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -36,7 +37,10 @@ class SavedFoodViewHolder(
 //                .into(itemBinding.foodPicture);
             val f = File(savedFood.customImagePath!!)
             val uri : Uri = Uri.fromFile(f)
+//                    itemBinding.foodPicture.setImageURI(uri)
             itemBinding.foodPicture.setImageURI(uri)
+            itemBinding.foodPicture.setImageBitmap(BitmapFactory.decodeFile(savedFood.customImagePath));
+            //itemBinding.foodPicture.setImageURI(uri)
         }else{
             Glide.with(itemBinding.root)
                 .load(savedFood.strMealThumb)

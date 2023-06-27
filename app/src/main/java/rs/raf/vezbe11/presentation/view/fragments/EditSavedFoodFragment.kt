@@ -160,14 +160,14 @@ class EditSavedFoodFragment : Fragment(R.layout.fragment_editsavedfood) {
 //                    imageUri.toString(),
 //                 )
                 //imageUri.encodedPath
-                food!!.customImagePath = imageUri.path
+                food!!.customImagePath = photoFile.absolutePath
                 //val f = File(food!!.customImagePath!!)
                 //val uri : Uri = Uri.fromFile(f)
 //                foodPicture.setImageURI(uri)
                 foodViewModel.updateSavedFood(food!!)
 
 
-                Toast.makeText(requireContext(), imageUri.toString(), Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), photoFile.absolutePath, Toast.LENGTH_SHORT).show()
             } else {
                 Toast.makeText(requireContext(), "Failed to save the photo", Toast.LENGTH_SHORT).show()
             }
@@ -330,7 +330,7 @@ class EditSavedFoodFragment : Fragment(R.layout.fragment_editsavedfood) {
                     val uri : Uri = Uri.fromFile(f)
 //                    itemBinding.foodPicture.setImageURI(uri)
                     binding.imageView.setImageURI(uri)
-//                    binding.imageView.setImageBitmap(BitmapFactory.decodeFile(food!!.customImagePath));
+                    binding.imageView.setImageBitmap(BitmapFactory.decodeFile(food!!.customImagePath));
                 }else{
                     Glide.with(this)
                         .load(food!!.strMealThumb)

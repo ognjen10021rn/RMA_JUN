@@ -19,6 +19,7 @@ interface FoodContract {
         val areaState: LiveData<AreasState>
         val addDone: LiveData<AddFoodState>
         val foodByIdState: LiveData<FoodByIdState>
+        val foodState2: LiveData<FoodState2>
         val selectedCategoryState: LiveData<SelectedCategoryState>
         val savedFoodState: LiveData<SavedFoodState>
 
@@ -35,7 +36,8 @@ interface FoodContract {
         fun fetchAllAreas();
         fun fetchMealsByArea(area: String);
         fun fetchMealsByCategory(category: String);
-
+        fun getAllFoods()
+        fun fetchAllFoods()
         fun getCurrentSavedFood(): SavedFood;
         fun fetchFoodWithId(id:String);
         fun getFoodWithId(id:String);

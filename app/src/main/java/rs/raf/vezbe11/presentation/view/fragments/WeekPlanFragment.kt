@@ -36,7 +36,13 @@ class WeekPlanFragment : Fragment(R.layout.fragment_weekplan) {
     }
 
     private fun init(){
-
+        binding.imageButton.setOnClickListener{
+            // otvori dijalog
+            val transaction= parentFragment?.childFragmentManager?.beginTransaction()
+            transaction?.replace(R.id.outerFcvFifthTabFragment,ChooseFood())
+            transaction?.addToBackStack(null)
+            transaction?.commit()
+        }
     }
 
 

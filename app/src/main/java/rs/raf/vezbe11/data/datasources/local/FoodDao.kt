@@ -38,6 +38,10 @@ abstract class FoodDao {
 
     @Query("SELECT * FROM foods where id = :id")
     abstract fun getById(id: String): Observable<FoodEntity>
+
+    @Query("SELECT * FROM foods")
+    abstract fun getAllFoods(): Observable<List<FoodEntity>>
+
     @Query("SELECT * FROM categories where name = :category")
     abstract fun getCategoryByName(category: String): Observable<CategoryEntity>
 
@@ -71,6 +75,8 @@ abstract class FoodDao {
     abstract fun insertAllCategories(entities: List<CategoryEntity>): Completable
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun insertAllAreas(entities: List<AreaEntity>): Completable
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun insertAllFoods(entities: List<FoodEntity>): Completable
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun insertMeal(entities: FoodEntity): Completable
@@ -103,8 +109,13 @@ abstract class FoodDao {
 
     @Transaction
     open fun deleteAndInsertMeal(entities: FoodEntity) {
-        deleteAll()
+        //deleteAll()
         insertMeal(entities).blockingAwait()
+    }
+    @Transaction
+    open fun deleteAndInsertAllFoods(entities: List<FoodEntity>) {
+        deleteAll()
+        insertAllFoods(entities).blockingAwait()
     }
 
     //SavedFood
