@@ -13,7 +13,7 @@ import com.androidplot.pie.SegmentFormatter
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import rs.raf.vezbe11.R
 import rs.raf.vezbe11.data.models.SavedFood
-import rs.raf.vezbe11.databinding.FragmentSavedmealslistBinding
+//import rs.raf.vezbe11.databinding.FragmentSavedmealslistBinding
 import rs.raf.vezbe11.databinding.FragmentStatisticBinding
 import rs.raf.vezbe11.presentation.contract.FoodContract
 import rs.raf.vezbe11.presentation.view.states.SavedFoodState
@@ -51,6 +51,8 @@ class StatisticFragment : Fragment(R.layout.fragment_statistic) {
             renderSavedFood(it)
         })
         foodViewModel.getAllSavedFood()
+
+        //initFirstChart()
     }
 
     //TODO NASTAVICEMO OVO KADA ZAVRSIMO KREIRANJE PLANA,NE MOZE BEZ TOGA
@@ -76,7 +78,8 @@ class StatisticFragment : Fragment(R.layout.fragment_statistic) {
         var d6=0;
 
         for (food in savedFoodList!!){
-            val day = food.dayOfMonth - previousDays.dayOfMonth
+            val day = food.dayOfMonth - previousDays.dayOfMonth -1
+            //println(day)
             if(day == 0)
                 d6++
             if(day == 1)
@@ -102,51 +105,107 @@ class StatisticFragment : Fragment(R.layout.fragment_statistic) {
         val s6=Segment("Pre 6 dana",d6.toFloat())
 
         val color0=SegmentFormatter(Color.BLUE)
-        val color1=SegmentFormatter(Color.LTGRAY)
+        val color1=SegmentFormatter(Color.RED)
         val color2=SegmentFormatter(Color.GREEN)
         val color3=SegmentFormatter(Color.YELLOW)
         val color4=SegmentFormatter(Color.CYAN)
         val color5=SegmentFormatter(Color.MAGENTA)
-        val color6=SegmentFormatter(Color.GRAY)
-
-        binding.pieChart1.addSegment(s0, color0)
-        binding.pieChart1.addSegment(s1, color1)
-        binding.pieChart1.addSegment(s2, color2)
-        binding.pieChart1.addSegment(s3, color3)
-        binding.pieChart1.addSegment(s4, color4)
-        binding.pieChart1.addSegment(s5, color5)
-        binding.pieChart1.addSegment(s6, color6)
+        val color6=SegmentFormatter(Color.BLACK)
+        if(d0 > 0){
+            binding.pieChart1.addSegment(s0, color0)
+        }
+        if(d1 > 0){
+            binding.pieChart1.addSegment(s1, color1)
+        }
+        if(d2 > 0){
+            binding.pieChart1.addSegment(s2, color2)
+        }
+        if(d3 > 0){
+            binding.pieChart1.addSegment(s3, color3)
+        }
+        if(d4 > 0){
+            binding.pieChart1.addSegment(s4, color4)
+        }
+        if(d5 > 0){
+            binding.pieChart1.addSegment(s5, color5)
+        }
+        if(d6 > 0){
+            binding.pieChart1.addSegment(s6, color6)
+        }
 
     }
 
     //broj kalorija po danima
     private fun initSecondChart(){
 
-        val d0=0; //juce
-        val d1=0; //prekjuce
-        val d2=0; //pre 3 dana
-        val d3=0;
-        val d4=0;
-        val d5=0;
-        val d6=0;
+        val currentDate = LocalDate.now()
+        val previousDays = currentDate.minusDays(7)
+        var d0=0.0; //juce
+        var d1=0.0; //prekjuce
+        var d2=0.0; //pre 3 dana
+        var d3=0.0;
+        var d4=0.0;
+        var d5=0.0;
+        var d6=0.0;
+        for (food in savedFoodList!!){
+            val day = food.dayOfMonth - previousDays.dayOfMonth -1
+            //println(day)
+            println(food.calories)
+            if(day == 0)
+                d6+=food.calories
+            if(day == 1)
+                d5+=food.calories
+            if(day == 2)
+                d4+=food.calories
+            if(day == 3)
+                d3+=food.calories
+            if(day == 4)
+                d2+=food.calories
+            if(day == 5)
+                d1+=food.calories
+            if(day == 6)
+                d0+=food.calories
+        }
 
         // inkrementiranje dana
 
-        val s0=Segment("Danas", d0.toFloat())
-        val s1=Segment("Pre 1 dana",d1.toFloat())
-        val s2=Segment("Pre 2 dana",d2.toFloat())
-        val s3=Segment("Pre 3 dana",d3.toFloat())
-        val s4=Segment("Pre 4 dana",d4.toFloat())
-        val s5=Segment("Pre 5 dana",d5.toFloat())
-        val s6=Segment("Pre 6 dana",d6.toFloat())
+        val s0=Segment("Danas", d0)
+        val s1=Segment("Pre 1 dana",d1)
+        val s2=Segment("Pre 2 dana",d2)
+        val s3=Segment("Pre 3 dana",d3)
+        val s4=Segment("Pre 4 dana",d4)
+        val s5=Segment("Pre 5 dana",d5)
+        val s6=Segment("Pre 6 dana",d6)
 
         val color0=SegmentFormatter(Color.BLUE)
-        val color1=SegmentFormatter(Color.LTGRAY)
+        val color1=SegmentFormatter(Color.RED)
         val color2=SegmentFormatter(Color.GREEN)
         val color3=SegmentFormatter(Color.YELLOW)
         val color4=SegmentFormatter(Color.CYAN)
         val color5=SegmentFormatter(Color.MAGENTA)
-        val color6=SegmentFormatter(Color.GRAY)
+        val color6=SegmentFormatter(Color.BLACK)
+
+        if(d0 > 0.0){
+            binding.pieChart2.addSegment(s0, color0)
+        }
+        if(d1 > 0.0){
+            binding.pieChart2.addSegment(s1, color1)
+        }
+        if(d2 > 0.0){
+            binding.pieChart2.addSegment(s2, color2)
+        }
+        if(d3 > 0.0){
+            binding.pieChart2.addSegment(s3, color3)
+        }
+        if(d4 > 0.0){
+            binding.pieChart2.addSegment(s4, color4)
+        }
+        if(d5 > 0.0){
+            binding.pieChart2.addSegment(s5, color5)
+        }
+        if(d6 > 0.0){
+            binding.pieChart2.addSegment(s6, color6)
+        }
 
     }
 
@@ -156,8 +215,10 @@ class StatisticFragment : Fragment(R.layout.fragment_statistic) {
                 showLoadingState(false)
                 //savedFoodAdapter.submitList(state.savedFoods)
                 savedFoodList = state.savedFoods
+
                 initFirstChart()
                 initSecondChart()
+                //initSecondChart()
 
             }
             is SavedFoodState.Success2 -> {
