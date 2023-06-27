@@ -72,7 +72,8 @@ class MealDetailsSaveFragment :Fragment(R.layout.fragment_categorydetails) {
                 val entity = SavedFood(System.currentTimeMillis(), food!!.name, food!!.strInstructions, food!!.strCategory,
                     binding.datePicker.dayOfMonth, binding.datePicker.month, binding.datePicker.year, finalCalories,mealType, food!!.strMealThumb, food!!.strYoutube, food!!.strIngredient1,
                     food!!.strIngredient2, food!!.strIngredient3, food!!.strIngredient4, food!!.strIngredient5,
-                    food!!.strMeasure1, food!!.strMeasure2, food!!.strMeasure3, food!!.strMeasure4, food!!.strMeasure5)
+                    food!!.strMeasure1, food!!.strMeasure2, food!!.strMeasure3, food!!.strMeasure4, food!!.strMeasure5, null)
+                    // food nema custom image path
 
                 foodViewModel.insertSavedFood(entity)
 

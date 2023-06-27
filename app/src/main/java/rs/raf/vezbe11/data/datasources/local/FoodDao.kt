@@ -64,6 +64,8 @@ abstract class FoodDao {
 
     @Query("SELECT * FROM areas WHERE strArea LIKE :name || '%'")
     abstract fun getByArea(name: String): List<AreaEntity>
+    @Query("SELECT * FROM foods WHERE strCategory LIKE :name || '%'")
+    abstract fun getByCategory(name: String): List<FoodEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun insertAllCategories(entities: List<CategoryEntity>): Completable

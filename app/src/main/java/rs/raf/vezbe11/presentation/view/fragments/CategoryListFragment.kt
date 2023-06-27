@@ -55,7 +55,8 @@ class CategoryListFragment : Fragment(R.layout.fragment_categorylist){
         //onItemClicked
 
             //TODO isto kao i u drugoj lambdi,setovati u viewmodelu selektovanu kategoriju
-
+            //foodViewModel.getSelectedCategory(it.name)
+            foodViewModel.fetchMealsByCategory(it.name)
             val transaction=parentFragment?.childFragmentManager?.beginTransaction()
             transaction?.replace(R.id.outerFcvCategoriesList,FoodByCategoryFragment())
             transaction?.addToBackStack(null)

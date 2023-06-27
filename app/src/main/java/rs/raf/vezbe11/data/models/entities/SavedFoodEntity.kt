@@ -30,6 +30,7 @@ class SavedFoodEntity(
     val strMeasure3: String?,
     val strMeasure4: String?,
     val strMeasure5: String?,
+    val customImagePath: String?
 
 
 )

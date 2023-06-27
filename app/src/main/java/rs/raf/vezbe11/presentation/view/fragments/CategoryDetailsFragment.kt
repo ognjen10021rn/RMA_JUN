@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import rs.raf.vezbe11.R
@@ -39,7 +40,7 @@ class CategoryDetailsFragment :Fragment(R.layout.fragment_categorydetails) {
     }
     private fun initObservers(){
 
-        foodViewModel.selectedCategoryState.observe(viewLifecycleOwner, {
+        foodViewModel.selectedCategoryState.observe(viewLifecycleOwner, Observer{
 //            println("CATEGORY ENTITY ${it.name}")
 //            binding.textViewDescription.text = it.description
 //            binding.textViewName.text = it.name

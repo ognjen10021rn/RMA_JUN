@@ -198,7 +198,7 @@ class FoodRepositoryImplementation(
                     SavedFood(it.id,it.name,it.strInstructions,it.strCategory,it.dayOfMonth, it.month,it.year, it.calories,
                     it.strMealType,it.strMealThumb,it.strYoutube,it.strIngredient1,
                     it.strIngredient2,it.strIngredient3,it.strIngredient4,it.strIngredient5,
-                    it.strMeasure1,it.strMeasure2,it.strMeasure3,it.strMeasure4,it.strMeasure5)
+                    it.strMeasure1,it.strMeasure2,it.strMeasure3,it.strMeasure4,it.strMeasure5, it.customImagePath)
                 }
             }
     }
@@ -208,7 +208,7 @@ class FoodRepositoryImplementation(
             food.strCategory,
             food.strMealType,food.strMealThumb,food.strYoutube,food.strIngredient1,
             food.strIngredient2,food.strIngredient3,food.strIngredient4,food.strIngredient5,
-            food.strMeasure1,food.strMeasure2,food.strMeasure3,food.strMeasure4,food.strMeasure5)
+            food.strMeasure1,food.strMeasure2,food.strMeasure3,food.strMeasure4,food.strMeasure5, food.customImagePath)
         localDataSource.insertSavedFood(savedEntity)
         return localDataSource.insertSavedFood(savedEntity)
 
@@ -221,7 +221,7 @@ class FoodRepositoryImplementation(
                 SavedFood(it.id,it.name,it.strInstructions,it.strCategory,it.dayOfMonth, it.month, it.year, it.calories,
                     it.strMealType,it.strMealThumb,it.strYoutube,it.strIngredient1,
                     it.strIngredient2,it.strIngredient3,it.strIngredient4,it.strIngredient5,
-                    it.strMeasure1,it.strMeasure2,it.strMeasure3,it.strMeasure4,it.strMeasure5)
+                    it.strMeasure1,it.strMeasure2,it.strMeasure3,it.strMeasure4,it.strMeasure5, it.customImagePath)
             }
     }
 
