@@ -1,6 +1,8 @@
 package rs.raf.vezbe11.presentation.view.fragments
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import org.koin.android.ext.android.bind
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import rs.raf.vezbe11.R
+import rs.raf.vezbe11.data.models.SavedFood
 import rs.raf.vezbe11.databinding.FragmentSavedmealslistBinding
 import rs.raf.vezbe11.presentation.contract.FoodContract
 import rs.raf.vezbe11.presentation.view.recycler.adapter.SavedFoodAdapter
@@ -19,6 +22,7 @@ import rs.raf.vezbe11.presentation.view.recycler.diff.SavedFoodDiffCallback
 import rs.raf.vezbe11.presentation.view.states.NutritionState
 import rs.raf.vezbe11.presentation.view.states.SavedFoodState
 import rs.raf.vezbe11.presentation.viewmodel.FoodViewModel
+import timber.log.Timber
 
 class SavedFoodFragment : Fragment(R.layout.fragment_savedmealslist) {
 
@@ -28,6 +32,7 @@ class SavedFoodFragment : Fragment(R.layout.fragment_savedmealslist) {
     // onDestroyView.
     private val binding get() = _binding!!
     private lateinit var savedFoodAdapter: SavedFoodAdapter
+    private var currMealList: List<SavedFood>? = null
 
 
     override fun onCreateView(
@@ -46,6 +51,7 @@ class SavedFoodFragment : Fragment(R.layout.fragment_savedmealslist) {
     private fun init(){
 
         initObservers()
+        initListener()
         initRecycler()
 
     }
@@ -75,18 +81,42 @@ class SavedFoodFragment : Fragment(R.layout.fragment_savedmealslist) {
 
 
     }
+    private fun initListener(){
+        binding.nameFilterEditText.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                if(s.toString().length>=1){
+
+                    val containsString=binding.nameFilterEditText.text.toString()
+                    Timber.e(containsString)
+                    val tmpList= currMealList?.filter { it.name.toLowerCase().contains(containsString) }
+                    savedFoodAdapter.submitList(tmpList)
+                    Timber.e(tmpList.toString())
+                }
+                else{
+                    //foodViewModel.getAllMealsByParamater(10, 0)
+                    savedFoodAdapter.submitList(currMealList)
+                }
+            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int,count: Int,after: Int) {
+            }
+            override fun onTextChanged(s: CharSequence?, start: Int,before: Int,count: Int) {
+            }
+        })
+    }
     private fun initObservers(){
         foodViewModel.savedFoodState.observe(viewLifecycleOwner, Observer{
             renderFood(it)
         })
 
         foodViewModel.getAllSavedFood()
+
     }
 
     private fun renderFood(state: SavedFoodState){
         when(state){
             is SavedFoodState.Success -> {
                 showLoadingState(false)
+                currMealList = state.savedFoods
                 savedFoodAdapter.submitList(state.savedFoods)
             }
             is SavedFoodState.Success2 -> {

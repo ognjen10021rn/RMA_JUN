@@ -77,6 +77,7 @@ class MealDetailsSaveFragment :Fragment(R.layout.fragment_categorydetails) {
 
                 foodViewModel.insertSavedFood(entity)
 
+                finalCalories = 0.0
                 val transaction= parentFragment?.childFragmentManager?.beginTransaction()
                 transaction?.replace(R.id.outerFcvFilterFragment, FilterFragment())
                 transaction?.addToBackStack(null)

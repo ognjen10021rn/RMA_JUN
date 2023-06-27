@@ -1,5 +1,6 @@
 package rs.raf.vezbe11.data.models.entities
 
+import android.net.Uri
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.sql.Date
@@ -30,7 +31,7 @@ class SavedFoodEntity(
     val strMeasure3: String?,
     val strMeasure4: String?,
     val strMeasure5: String?,
-    val customImagePath: String?
+    var customImagePath: String?
 
 
 )

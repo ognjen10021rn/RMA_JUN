@@ -21,11 +21,13 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.net.toUri
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import org.koin.android.ext.android.bind
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 import org.koin.ext.getOrCreateScope
 import rs.raf.vezbe11.R
@@ -132,32 +134,37 @@ class EditSavedFoodFragment : Fragment(R.layout.fragment_editsavedfood) {
                     requireContext().packageName + ".fileprovider",
                     photoFile
                 )
-                binding.imageView.setImageDrawable(null)
+                //binding.imageView.setImageDrawable(null)
 
-                val savedEntity = SavedFood(food!!.id,
-                    food!!.name,
-                    food!!.strInstructions,
-                    food!!.strCategory,
-                    food!!.dayOfMonth,
-                    food!!.month,
-                    food!!.year,
-                    food!!.calories,
-                    food!!.strMealType,
-                    food!!.strMealThumb,
-                    food!!.strYoutube,
-                    food!!.strIngredient1,
-                    food!!.strIngredient2,
-                    food!!.strIngredient3,
-                    food!!.strIngredient4,
-                    food!!.strIngredient5,
-                    food!!.strMeasure1,
-                    food!!.strMeasure2,
-                    food!!.strMeasure3,
-                    food!!.strMeasure4,
-                    food!!.strMeasure5,
-                    imageUri.toString(),
-                 )
-                foodViewModel.updateSavedFood(savedEntity)
+//                val savedEntity = SavedFood(food!!.id,
+//                    food!!.name,
+//                    food!!.strInstructions,
+//                    food!!.strCategory,
+//                    food!!.dayOfMonth,
+//                    food!!.month,
+//                    food!!.year,
+//                    food!!.calories,
+//                    food!!.strMealType,
+//                    food!!.strMealThumb,
+//                    food!!.strYoutube,
+//                    food!!.strIngredient1,
+//                    food!!.strIngredient2,
+//                    food!!.strIngredient3,
+//                    food!!.strIngredient4,
+//                    food!!.strIngredient5,
+//                    food!!.strMeasure1,
+//                    food!!.strMeasure2,
+//                    food!!.strMeasure3,
+//                    food!!.strMeasure4,
+//                    food!!.strMeasure5,
+//                    imageUri.toString(),
+//                 )
+                //imageUri.encodedPath
+                food!!.customImagePath = imageUri.path
+                //val f = File(food!!.customImagePath!!)
+                //val uri : Uri = Uri.fromFile(f)
+//                foodPicture.setImageURI(uri)
+                foodViewModel.updateSavedFood(food!!)
 
 
                 Toast.makeText(requireContext(), imageUri.toString(), Toast.LENGTH_SHORT).show()
@@ -200,7 +207,9 @@ class EditSavedFoodFragment : Fragment(R.layout.fragment_editsavedfood) {
             folder.mkdirs()
         }
 
+
         val imageFile = File(folder, imageFileName)
+        imageFile.createNewFile()
         val imageFilePath = imageFile.absolutePath
 
         // Save the image file if needed
@@ -315,10 +324,18 @@ class EditSavedFoodFragment : Fragment(R.layout.fragment_editsavedfood) {
                 binding.datePicker.updateDate(food!!.year, food!!.month, food!!.dayOfMonth)
                 //nutritionViewModel.fetchAllNutritionByQuery(queryString)
 
-                Toast.makeText(context, "Radim render", Toast.LENGTH_SHORT).show()
-                Glide.with(this)
-                    .load(food!!.strMealThumb)
-                    .into(binding.imageView)
+                //Toast.makeText(context, "Radim render", Toast.LENGTH_SHORT).show()
+                if(food!!.customImagePath != null){
+                    val f = File(food!!.customImagePath!!)
+                    val uri : Uri = Uri.fromFile(f)
+//                    itemBinding.foodPicture.setImageURI(uri)
+                    binding.imageView.setImageURI(uri)
+//                    binding.imageView.setImageBitmap(BitmapFactory.decodeFile(food!!.customImagePath));
+                }else{
+                    Glide.with(this)
+                        .load(food!!.strMealThumb)
+                        .into(binding.imageView)
+                }
             }
             is SavedFoodState.Error -> {
                 showLoadingState(false)

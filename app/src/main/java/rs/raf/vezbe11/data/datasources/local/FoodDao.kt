@@ -117,8 +117,8 @@ abstract class FoodDao {
     @Query("DELETE FROM savedFoods WHERE id = :id")
     abstract fun deleteSavedFoodById(id: String): Completable
 
-    @Query("UPDATE savedFoods SET name = :name, strCategory = :category, strInstructions = :instructions, strMealThumb = :image, strYoutube = :youtube WHERE id = :id")
-    abstract fun updateSavedFood(id: String, name: String, category: String, instructions: String, image: String, youtube: String): Completable
+    @Query("UPDATE savedFoods SET name = :name, strCategory = :category, strInstructions = :instructions, strMealThumb = :image, strYoutube = :youtube, customImagePath =:customPath WHERE id = :id")
+    abstract fun updateSavedFood(id: String, name: String, category: String, instructions: String, image: String, youtube: String, customPath: String): Completable
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun insertSavedFood(entity: SavedFoodEntity): Completable

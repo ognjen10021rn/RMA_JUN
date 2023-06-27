@@ -149,8 +149,6 @@ class StatisticFragment : Fragment(R.layout.fragment_statistic) {
         var d6=0.0;
         for (food in savedFoodList!!){
             val day = food.dayOfMonth - previousDays.dayOfMonth -1
-            //println(day)
-            println(food.calories)
             if(day == 0)
                 d6+=food.calories
             if(day == 1)

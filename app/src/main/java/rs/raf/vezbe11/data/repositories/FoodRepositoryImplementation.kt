@@ -232,7 +232,7 @@ class FoodRepositoryImplementation(
     override fun updateSavedFood(food: SavedFood): Completable {
         return localDataSource.updateSavedFood(food.id.toString(),food.name,
             food.strCategory,food.strInstructions,
-            food.strMealThumb,food.strYoutube)
+            food.strMealThumb,food.strYoutube, food.customImagePath!!)
     }
 
 
