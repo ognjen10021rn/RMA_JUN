@@ -133,9 +133,6 @@ class EditSavedFoodFragment : Fragment(R.layout.fragment_editsavedfood) {
                     photoFile
                 )
                 binding.imageView.setImageDrawable(null)
-                Glide.with(requireContext())
-                    .load("https://www.themealdb.com/images/media/meals/ustsqw1468250014.jpg")
-                    .into(binding.imageView)
 
                 val savedEntity = SavedFood(food!!.id,
                     food!!.name,
