@@ -2,9 +2,12 @@ package rs.raf.vezbe11.presentation.view.fragments
 
 import android.Manifest
 import android.app.Activity
+import android.app.Activity.RESULT_CANCELED
+import android.app.Activity.RESULT_OK
 import android.content.ContentValues
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
@@ -22,33 +25,30 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
+import org.koin.ext.getOrCreateScope
 import rs.raf.vezbe11.R
-import rs.raf.vezbe11.data.database.converters.DateConverter
 import rs.raf.vezbe11.data.models.Category
 import rs.raf.vezbe11.data.models.Nutrition
 import rs.raf.vezbe11.data.models.SavedFood
-import rs.raf.vezbe11.databinding.FragmentCategorylistBinding
+import rs.raf.vezbe11.data.models.entities.SavedFoodEntity
 import rs.raf.vezbe11.databinding.FragmentEditsavedfoodBinding
 import rs.raf.vezbe11.presentation.contract.FoodContract
 import rs.raf.vezbe11.presentation.contract.NutritionContract
-import rs.raf.vezbe11.presentation.view.activities.MainActivity
 import rs.raf.vezbe11.presentation.view.states.FoodState
 import rs.raf.vezbe11.presentation.view.states.NutritionState
 import rs.raf.vezbe11.presentation.view.states.SavedFoodState
 import rs.raf.vezbe11.presentation.viewmodel.FoodViewModel
 import rs.raf.vezbe11.presentation.viewmodel.NutritionViewModel
-import timber.log.Timber
 import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
-import java.text.DateFormat
 import java.text.SimpleDateFormat
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
-import kotlin.time.days
+
 
 class EditSavedFoodFragment : Fragment(R.layout.fragment_editsavedfood) {
 
@@ -93,18 +93,86 @@ class EditSavedFoodFragment : Fragment(R.layout.fragment_editsavedfood) {
 
     private fun initPermissions() {
 
-        Timber.e(requireActivity().toString())
+
 
         binding.imageView.setOnClickListener {
             if (checkCameraPermission()) {
                 Toast.makeText(requireContext(), "Permission already granted", Toast.LENGTH_SHORT).show()
-                catchFoodPhoto()
+                //catchFoodPhoto()
+                catchFoodPhoto2()
+
             } else {
                 requestCameraPermission() // ako prihvati pokrenuce se catchFoodPhotyo
-
+                if(checkCameraPermission()){
+                    catchFoodPhoto2()
+                }
             }
         }
     }
+    private fun catchFoodPhoto2(){
+        val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        startActivityForResult(intent, CAMERA_PERMISSION_REQUEST_CODE)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (resultCode == Activity.RESULT_OK) {
+            val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
+            val storageDir = requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES) // Use external storage directory
+            val imageFileName = "IMG_$timeStamp.jpg"
+            val photoFile = createImageFile(storageDir!!, imageFileName)
+
+            val images:Bitmap=data?.extras?.get("data") as Bitmap
+            binding.imageView.setImageBitmap(images)
+
+
+            if (photoFile != null) {
+                val imageUri = FileProvider.getUriForFile(
+                    requireContext(),
+                    requireContext().packageName + ".fileprovider",
+                    photoFile
+                )
+                binding.imageView.setImageDrawable(null)
+                Glide.with(requireContext())
+                    .load("https://www.themealdb.com/images/media/meals/ustsqw1468250014.jpg")
+                    .into(binding.imageView)
+
+                val savedEntity = SavedFood(food!!.id,
+                    food!!.name,
+                    food!!.strInstructions,
+                    food!!.strCategory,
+                    food!!.dayOfMonth,
+                    food!!.month,
+                    food!!.year,
+                    food!!.calories,
+                    food!!.strMealType,
+                    food!!.strMealThumb,
+                    food!!.strYoutube,
+                    food!!.strIngredient1,
+                    food!!.strIngredient2,
+                    food!!.strIngredient3,
+                    food!!.strIngredient4,
+                    food!!.strIngredient5,
+                    food!!.strMeasure1,
+                    food!!.strMeasure2,
+                    food!!.strMeasure3,
+                    food!!.strMeasure4,
+                    food!!.strMeasure5,
+                    imageUri.toString(),
+                 )
+                foodViewModel.updateSavedFood(savedEntity)
+
+
+                Toast.makeText(requireContext(), imageUri.toString(), Toast.LENGTH_SHORT).show()
+            } else {
+                Toast.makeText(requireContext(), "Failed to save the photo", Toast.LENGTH_SHORT).show()
+            }
+        } else if (resultCode == Activity.RESULT_CANCELED) {
+            Toast.makeText(requireContext(), "Cancelled", Toast.LENGTH_LONG).show()
+        }
+    }
+
+
 
     private fun checkCameraPermission(): Boolean {
         val cameraPermission = ContextCompat.checkSelfPermission(
@@ -125,78 +193,27 @@ class EditSavedFoodFragment : Fragment(R.layout.fragment_editsavedfood) {
     ) {
         if (requestCode == CAMERA_PERMISSION_REQUEST_CODE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                catchFoodPhoto()
-            }
-        }
-    }
-
-
-
-    private fun catchFoodPhoto() {
-        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-        val imageFileName = "IMG_$timeStamp.jpg"
-        val storageDir = requireContext().filesDir // Use internal storage directory
-
-        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        takePictureIntent.resolveActivity(requireActivity().packageManager)?.let {
-            val photoFile: File? = try {
-                createImageFile(storageDir, imageFileName)
-            } catch (ex: IOException) {
-                Toast.makeText(requireContext(), "Error occurred while creating the File", Toast.LENGTH_SHORT).show()
-                null
-            }
-            photoFile?.let { file ->
-                val photoUri: Uri = FileProvider.getUriForFile(
-                    requireContext(),
-                    requireContext().packageName + ".fileprovider",
-                    file
-                )
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoUri)
-                startActivityForResult(takePictureIntent, CAMERA_REQUEST_CODE)
-            }
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        if (requestCode == CAMERA_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss", Locale.getDefault()).format(Date())
-            val storageDir = requireContext().filesDir // Use internal storage directory
-            val imageFileName = "IMG_$timeStamp.jpg"
-            val photoFile = File(storageDir, imageFileName)
-
-            // Process the captured photo
-            if (photoFile.exists()) {
-                // Photo captured successfully, perform further operations as needed
-                val imagePath = photoFile.absolutePath
-                // ... Handle the photo path as required
-
-                // Example: Show the captured photo in an ImageView
-                val bitmap = BitmapFactory.decodeFile(imagePath)
-                binding.imageView.setImageBitmap(bitmap)
-            } else {
-                Toast.makeText(requireContext(), "Failed to save the photo", Toast.LENGTH_SHORT).show()
+                catchFoodPhoto2()
             }
         }
     }
 
 
     private fun createImageFile(storageDir: File, imageFileName: String): File {
-        val imageFile = File(storageDir, imageFileName)
+        val folder = File(storageDir, "capturedImages")
+        if (!folder.exists()) {
+            folder.mkdirs()
+        }
+
+        val imageFile = File(folder, imageFileName)
         val imageFilePath = imageFile.absolutePath
 
-        val values = ContentValues().apply {
-            put(MediaStore.Images.Media.DISPLAY_NAME, imageFileName)
-            put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
-            put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures")
-        }
-        val imageUri = requireContext().contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)
-        val outputStream = requireContext().contentResolver.openOutputStream(imageUri ?: return imageFile)
-        outputStream?.use { fileOutputStream ->
-            // Save the image file if needed
-        }
+        // Save the image file if needed
+        // ...
 
+        if(!imageFile.exists()){
+            imageFile.createNewFile()
+        }
         return imageFile
     }
 
@@ -303,6 +320,7 @@ class EditSavedFoodFragment : Fragment(R.layout.fragment_editsavedfood) {
                 binding.datePicker.updateDate(food!!.year, food!!.month, food!!.dayOfMonth)
                 //nutritionViewModel.fetchAllNutritionByQuery(queryString)
 
+                Toast.makeText(context, "Radim render", Toast.LENGTH_SHORT).show()
                 Glide.with(this)
                     .load(food!!.strMealThumb)
                     .into(binding.imageView)
