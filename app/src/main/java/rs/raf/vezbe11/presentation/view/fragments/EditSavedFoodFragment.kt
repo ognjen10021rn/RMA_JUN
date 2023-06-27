@@ -169,8 +169,6 @@ class EditSavedFoodFragment : Fragment(R.layout.fragment_editsavedfood) {
         }
     }
 
-
-
     private fun checkCameraPermission(): Boolean {
         val cameraPermission = ContextCompat.checkSelfPermission(
             requireContext(), Manifest.permission.CAMERA
